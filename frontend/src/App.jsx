@@ -1,9 +1,15 @@
+import NavBar from "./Components/NavBar/NavBar";
+import SideBar from "./Components/SideBar/SideBar";
 import RouteStructure from "./Routes";
 
 function App() {
   return (
     <>
-      <RouteStructure />
+      <NavBar />
+      <div className="flex">
+        <SideBar />
+        <RouteStructure />
+      </div>
     </>
   );
 }
