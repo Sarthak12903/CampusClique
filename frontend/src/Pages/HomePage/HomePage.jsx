@@ -1,7 +1,10 @@
+import CreatePost from "../../Components/CreatePost/CreatePost";
+import Post from "../../Components/Post/Post"
 export default function HomePage() {
   return (
-    <div>
-      <h1>HomePage</h1>
+    <div className="py-4  px-10 w-full">
+      <CreatePost/>
+      <Post/>
     </div>
   );
 }
