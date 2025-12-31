@@ -41,7 +41,7 @@ const sidebarItems = [
 
 export default function LeftSideBar() {
   return (
-    <div className="w-[20%] h-[80%] py-20 px-10 flex flex-col gap-4 bg-gray-300">
+    <div className="hidden sm:flex w-[20%] h-[80%] py-20 px-10 flex flex-col gap-4 bg-gray-300">
       {sidebarItems.map((item) => {
         const Icon = item.icon;
 
