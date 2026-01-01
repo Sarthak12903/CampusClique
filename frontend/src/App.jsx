@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <NavBar />
-      <div className="flex w-screen items-start max-sm:px-5 lg:px-30 justify-around  md:gap-5 xl:gap-15 ">
+      <div className="flex w-screen items-start max-sm:px-5 lg:px-40 justify-around  md:gap-5 lg:gap-10 ">
         <LeftSideBar/>
         <RouteStructure/>
       <RightSideBar/>

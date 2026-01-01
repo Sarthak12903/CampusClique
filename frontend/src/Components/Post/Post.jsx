@@ -7,22 +7,22 @@ const Post = () => {
    <div className='bg-[#1e1e1e] border-2 px-5 py-4 my-6 rounded-xl'>
     <div className='flex flex-col '>
         {/* Uploaders details  */}
-        <div className='flex justify-start gap-4 p-2 items-center '>
+        <div className='flex justify-start gap-4 p-3 items-center '>
              <img src={ProfilePic} alt="PP" className='h-8 w-8 rounded-full' />
              <div>
-                <h6 className='font-semibold'>John Doe</h6>
-                <p className='text-gray-400 text-sm'> Posted : 12th June 2024</p>
+                <p className='font-semibold text-sm'>John Doe</p>
+                <p className='text-gray-400 text-xs'> Posted : 12th June 2024</p>
              </div>
         </div>
         {/* Main Content Section   */}
-        <div className="px-4">
-            <p className="text-sm">Lorem ipsum dolor sit, 
+        <div className="px-4 ">
+            <p className="text-sm px-2">Lorem ipsum dolor sit, 
                 amet consectetur adipisicing elit.
                  Neque recusandae quasi dolor iste 
                 expedita ipsa accusamus omnis? Iste,
                  atque doloribus! Debitis, neque tempore.
             </p>
-            <img src={dummyPost} alt="DP" className='w-[80%] max-sm:h-40 max-sm:m-2 sm:h-60 m-4 rounded-xl'/>
+            <img src={dummyPost} alt="DP" className='w-[80%] h-auto max-sm:h-40 max-sm:m-2 sm:h-60 m-4 rounded-xl'/>
 
         </div>
         {/* reaction */}
