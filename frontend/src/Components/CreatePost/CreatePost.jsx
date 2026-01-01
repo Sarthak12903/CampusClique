@@ -11,7 +11,7 @@ const CreatePost = () => {
         <input
           type="text"
           placeholder="What's on your mind?"
-          className="flex-1 max-sm: h-8 text-lg pl-4 rounded-xl  bg-gray-600 text-gray-300 outline:none"
+          className="flex-1 max-sm: h-8 text-md pl-4 rounded-xl max-md:text-sm bg-gray-600 text-gray-300 outline:none"
         />
         <button type="submit" className='rounded-full h-8 w-[25%] self-center bg-green-400'>Post</button>
       </div>
