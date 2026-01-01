@@ -1,8 +1,11 @@
 import ProfilePic from "../../assets/GradientIcons/ProfilePic.png";
 import { IoSearchOutline } from "react-icons/io5";
+import { AiOutlineMenu } from "react-icons/ai";
+
 export default function NavBar() {
   return (
-    <div className="w-full max-sm:p-5 sm:px-10 md:px-40  h-[5rem] bg-[#1e1e1e] flex justify-between items-center">
+    <div className="w-screen max-sm:p-5 sm:px-10 md:px-40  h-[5rem] bg-[#1e1e1e] flex justify-between items-center">
+      <AiOutlineMenu className="flex md:hidden" />
       <h1 className="font-bold max-sm:text-xl sm:text-2xl text-white">CampusClique</h1>
 
       {/* SearchBAr */}
@@ -22,12 +25,16 @@ export default function NavBar() {
      </div>
 
      {/* Profile Tab */}
-      <div className="rounded-full border-2 border-red-500 h-[2.5em] w-[12%] p-1 flex items-center justify-between">
+      <div className="rounded-full hidden md:flex border-2 border-red-500 h-[2.5em] w-[12%] p-1 flex items-center justify-between">
         <p className="text-sm ">John Doe</p>
         <img src={ProfilePic} alt="ProfilePic" className="rounded-full h-[2em] w-[25%]" />
       </div>
+      {/* MobileTab  */}
+       <img src={ProfilePic} alt="ProfilePic" className="flex md:hidden rounded-full h-8 w-8  border-2 border-white-400 " />
     </div>
-
+       
+       
+   
 
   );
 }
