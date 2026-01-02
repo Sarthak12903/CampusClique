@@ -1,6 +1,6 @@
 import React from 'react'
 import { SlPicture } from "react-icons/sl";
-
+import PrimaryGradientButton from '../PrimaryGradientButton/PrimaryGradientButton';
 import ProfilePic from "../../assets/GradientIcons/ProfilePic.png"
 const CreatePost = () => {
   return (
@@ -13,7 +13,7 @@ const CreatePost = () => {
           placeholder="What's on your mind?"
           className="flex-1 max-sm: h-8 text-md pl-4 rounded-xl max-md:text-sm bg-gray-600 text-gray-300 outline:none"
         />
-        <button type="submit" className='rounded-full h-8 w-[25%] self-center bg-green-400'>Post</button>
+       <PrimaryGradientButton buttonName="POST" onClick={()=>{console.log("POST button of create post clicked")}}/>
       </div>
       <div className='flex items-center px-20 justify-start gap-6 mb-2'>
        <SlPicture className='h-8 w-8 rounded-lg text-gray-400'/>

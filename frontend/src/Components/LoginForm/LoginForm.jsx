@@ -32,7 +32,7 @@ const LoginForm = () => {
                     </span>
                 </div>
                    <div className='space-y-2'>
-                     <PrimaryGradientButton/>
+                     <PrimaryGradientButton buttonName="Login"  onClick={()=>{console.log("Login button Clicked")}}/>
                     <p>Dont have account yet?<a href="#" className='text-blue-400 font-semibold'> Signup</a></p>
                    </div>
 

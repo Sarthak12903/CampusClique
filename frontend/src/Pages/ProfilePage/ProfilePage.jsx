@@ -8,9 +8,9 @@ export default function ProfilePage() {
       <ProfileTab/>
       <ProfileDescription/>
       <div className="flex p-2 items-center justify-center gap-2 mt-2">
-        <SecondaryGradientButton/>
-        <SecondaryGradientButton/>
-        <SecondaryGradientButton/>
+        <SecondaryGradientButton buttonName="Posts" onClick={()=>{console.log("my post are showing")}}/>
+        <SecondaryGradientButton buttonName="Bookmarks" onClick={()=>{console.log("bookmarks post are showing")}}/>
+        <SecondaryGradientButton buttonName="Liked" onClick={()=>{console.log("liked post are showing")}}/>
        
       </div>
      <Post className='mx-2'/>

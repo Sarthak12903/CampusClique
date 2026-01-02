@@ -2,10 +2,11 @@ import ProfilePic from "../../assets/GradientIcons/ProfilePic.png";
 import { IoSearchOutline } from "react-icons/io5";
 import { AiOutlineMenu } from "react-icons/ai";
 
-export default function NavBar() {
+export default function NavBar({onMenuClick}) {
   return (
     <div className="w-screen max-sm:p-5 sm:px-10 md:px-80 lg:px-60  h-[5rem] bg-[#1e1e1e] flex justify-between items-center">
-      <AiOutlineMenu className="flex md:hidden" />
+      <AiOutlineMenu   onClick={onMenuClick}
+        className="md:hidden text-white text-2xl cursor-pointer" />
       <h1 className="font-bold max-sm:text-xl sm:text-2xl text-white">CampusClique</h1>
 
       {/* SearchBAr */}
