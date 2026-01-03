@@ -1,43 +1,17 @@
-import {
-  IoHomeOutline,
-  IoPeopleOutline,
-  IoBookmarkOutline,
-  IoSettingsOutline,
-} from "react-icons/io5";
-import { MdEventNote, MdHelpOutline } from "react-icons/md";
+import home from "../../assets/GradientIcons/home.png"
+import bookmark from"../../assets/GradientIcons/bookmark.png"
 import PrimaryGradientButton from "../PrimaryGradientButton/PrimaryGradientButton";
-
+import messages from "../../assets/GradientIcons/messages.png"
+import settings from"../../assets/GradientIcons/setting.png"
+import community from "../../assets/GradientIcons/community.png"
+import explore from "../../assets/GradientIcons/explore.png"
 const sidebarItems = [
-  {
-    id: 1,
-    name: "Home",
-    icon: IoHomeOutline,
-  },
-  {
-    id: 2,
-    name: "Community",
-    icon: IoPeopleOutline,
-  },
-  {
-    id: 3,
-    name: "Events",
-    icon: MdEventNote,
-  },
-  {
-    id: 4,
-    name: "Saved",
-    icon: IoBookmarkOutline,
-  },
-  {
-    id: 5,
-    name: "Help",
-    icon: MdHelpOutline,
-  },
-  {
-    id: 6,
-    name: "Settings",
-    icon: IoSettingsOutline,
-  },
+  { id: 1, name: "Home", iconImg: home },
+  { id: 2, name: "Community", iconImg: community},
+  { id: 3, name: "Explore", iconImg: explore },
+  { id: 4, name: "Bookmarks", iconImg: bookmark },
+  { id: 5, name: "Messages", iconImg: messages },
+  { id: 6, name: "Settings", iconImg: settings },
 ];
 
 export default function LeftSideBar({ isOpen, onClose }) {
@@ -62,6 +36,10 @@ export default function LeftSideBar({ isOpen, onClose }) {
           md:static md:translate-x-0 md:w-[20%]
         `}
       >
+
+
+{/*
+
       {sidebarItems.map((item) => {
         const Icon = item.icon;
 
@@ -83,13 +61,42 @@ export default function LeftSideBar({ isOpen, onClose }) {
             </span>
           </div>
         );
-      })}
-      {/* <button className="rounded-full h-10 w-[80%] self-center bg-green-400 mt-5">POST</button> */}
-      {/* <button className="rounded-full h-10 w-[80%] self-center bg-green-400 ">CREATE SPACE</button> */}
+
+      })} */}
+
+
+      {sidebarItems.map((item) => (
+  <div
+    key={item.id}
+    className="flex items-center gap-6 px-4 py-2 rounded-lg cursor-pointer transition"
+  >
+    {/* PNG Icon */}
+    <img
+      src={item.iconImg}
+      alt={item.name}
+      className="w-6 h-6 object-contain"
+    />
+
+    {/* Text */}
+    <span
+      className="text-md font-medium text-white transition-all duration-300
+                 hover:bg-gradient-to-r
+                 hover:from-[#1BF0FF]
+                 hover:to-[#144DFB]
+                 hover:bg-clip-text
+                 hover:text-transparent"
+    >
+      {item.name}
+    </span>
+  </div>
+   ))}
+
+
       <PrimaryGradientButton buttonName="POST" onClick={()=>{console.log("POST BUTTON ON LEFT SIDE BAR IS CLICKED")}} />
       <PrimaryGradientButton buttonName="CREATE SPACE" onClick={()=>{console.log("Create spaceBUTTON ON LEFT SIDE BAR IS CLICKED")}} />
       
     </div>
+
     </>
   );
 }

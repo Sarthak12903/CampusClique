@@ -11,8 +11,7 @@ const CreatePost = () => {
         <input
           type="text"
           placeholder="What's on your mind?"
-          className="flex-1 max-sm: h-8 text-md pl-4 rounded-xl max-md:text-sm bg-gray-600 text-gray-300 outline:none"
-        />
+          className="flex-1 max-sm: h-8 text-md pl-4 rounded-xl max-md:text-sm bg-gray-600 text-gray-300 outline:none focus:outline-none focus:ring-2 focus:ring-[#00E5A8]"/>
        <PrimaryGradientButton buttonName="POST" onClick={()=>{console.log("POST button of create post clicked")}}/>
       </div>
       <div className='flex items-center px-20 justify-start gap-6 mb-2'>

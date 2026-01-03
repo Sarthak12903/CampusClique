@@ -4,7 +4,7 @@ const UserIdTab = () => {
   return (
     <div className='absolute bottom-[0px] left-0 
                 flex items-center gap-2
-                bg-black px-3 py-2 rounded-xl'>
+                bg-black px-3 py-2 rounded-xl text-white'>
         <img src={ProfilePic} alt="PP"  className='h-12 w-12'/>
         <div>
             <p className='truncate'>Alina Pathan</p>
