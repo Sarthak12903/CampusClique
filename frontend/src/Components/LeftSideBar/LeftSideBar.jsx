@@ -54,7 +54,7 @@ export default function LeftSideBar({ isOpen, onClose }) {
         className={`
           fixed top-0 left-0 z-50
           h-full w-[75%]
-          bg-gray-300
+          bg-[#1e1e1e]
           py-20 px-6
           flex flex-col gap-4
           transform transition-transform duration-300
@@ -72,7 +72,13 @@ export default function LeftSideBar({ isOpen, onClose }) {
                        transition"
           >
             <Icon className="text-2xl text-gray-600" />
-            <span className="text-md font-medium text-gray-700  hover:text-blue-100">
+            <span className="text-md font-medium text-white  transition-all duration-300
+    hover:bg-gradient-to-r
+    hover:from-[#1BF0FF]
+    hover:to-[#144DFB]
+    hover:bg-clip-text
+    hover:text-transparent
+  ">
               {item.name}
             </span>
           </div>

@@ -2,7 +2,7 @@ import React from 'react'
 import { MdOutlinePlace } from "react-icons/md";
 const ProfileDescription = () => {
     return (
-        <div>
+        <div className='text-white'>
             <p className='w-full h-auto p-2 text-sm md:text-md'>Lorem ipsum, dolor sit amet consectetur adipisicing elitrdrtegfdhtru Voluptatibus cupiditate excepturi</p>
             <div className="grid grid-cols-2 gap-x-6 gap-y-3 p-2 text-sm sm:text-md">
 

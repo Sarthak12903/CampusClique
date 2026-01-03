@@ -2,7 +2,7 @@ import UserIdTab from '../UserIdTab/UserIdTab'
 import { MdEdit } from "react-icons/md";
 const ProfileTab = () => {
     return (
-        <div className='relative w-full h-[220px] rounded-xl bg-red-200'>
+        <div className='relative w-full h-[220px] rounded-xl border-2 border-[#34D399] bg-red-200'>
             {/*User Pic and name*/}
             <UserIdTab />
             {/*Followers -Following*/}

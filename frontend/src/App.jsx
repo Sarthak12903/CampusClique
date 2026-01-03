@@ -9,17 +9,18 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <>
-      {/* <NavBar onMenuClick={() => setIsSidebarOpen(true)} />
+    <div className="bg-black">
+      <NavBar onMenuClick={() => setIsSidebarOpen(true)} />
       <div className="flex w-screen items-start max-sm:px-5 lg:px-40 justify-around   lg:gap-10 ">
         <LeftSideBar  isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}/>
         <RouteStructure/>
       <RightSideBar/>
-      </div> */}
+      </div>
 
    {/* <LoginPage/> */}
-   <CreateProfile/>
-
+   {/* <CreateProfile/> */}
+</div>
 
     </>
   );

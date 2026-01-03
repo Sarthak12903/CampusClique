@@ -4,7 +4,7 @@ import PrimaryGradientButton from '../PrimaryGradientButton/PrimaryGradientButto
 import ProfilePic from "../../assets/GradientIcons/ProfilePic.png"
 const CreatePost = () => {
   return (
-    <div className='bg-[#1e1e1e] border-2 p-2 rounded-xl'>
+    <div className='bg-[#1e1e1e] border-2 border-[#34D399] p-2 rounded-xl'>
 
       <div className='flex justify-around max-md:justify:center p-4 items-center gap-3 my-2'>
         <img src={ProfilePic} alt="PP" className='h-8 w-8 rounded-full' />

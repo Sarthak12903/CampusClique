@@ -4,7 +4,7 @@ import dummyPost from"../../assets/Images/dummyPost.jpg"
 const Post = () => {
   return (
     
-   <div className='bg-[#1e1e1e] border-2 px-5 py-4 my-6 mx-2 rounded-xl'>
+   <div className='bg-[#1e1e1e] border-2 text-white border-[#34D399] px-5 py-4 my-6 mx-2 rounded-xl'>
     <div className='flex flex-col '>
         {/* Uploaders details  */}
         <div className='flex justify-start gap-4 p-3 items-center '>
