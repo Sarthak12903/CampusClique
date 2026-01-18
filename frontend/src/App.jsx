@@ -10,7 +10,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <>
-    <div className="bg-black">
+    {/* <div className="bg-black">
       <NavBar onMenuClick={() => setIsSidebarOpen(true)} />
       <div className="flex w-screen items-start max-sm:px-5 lg:px-40 justify-around   lg:gap-10 ">
         <LeftSideBar  isOpen={isSidebarOpen}
@@ -19,8 +19,8 @@ function App() {
       <RightSideBar/>
       </div> 
 
-    </div>
-    {/* <CreateProfile/> */}
+    </div> */}
+    <CreateProfile/>
      </>
 
  

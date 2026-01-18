@@ -1,50 +1,47 @@
 import React from "react";
-
+import { useState } from "react";
 const CreateProfileForm = () => {
-  return (
-    <div className=" bg-[#0f0f0f] my-4 rounded-2xl p-8 max-w-xl mx-auto border border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.25)]">
-      <p className="text-center text-xl font-semibold text-blue-400 my-4">Create Your Profile</p>
-      <form className="flex flex-col gap-6">
-        
-        {/* Full Name */}
-        <div className="flex flex-col w-full gap-1">
-          <label
-            htmlFor="userFullName"
-            className="text-sm font-medium text-white"
-          >
-            Full Name
-          </label>
-          <input
-            type="text"
-            name="userFullName"
-            id="userFullName"
-            placeholder="Enter your full name"
-            className="w-full px-3 py-2 rounded-md border border-white bg-transparent
-                       placeholder-gray-400 text-white
-                      focus:outline-none focus:ring-2 focus:ring-[#00E5A8]"
-                       required
-          />
-        </div>
 
-        {/* College Name */}
-        <div className="flex flex-col w-full gap-1">
-          <label
-            htmlFor="userCollegeName"
-            className="text-sm font-medium text-white"
-          >
-            College Name
-          </label>
-          <input
-            type="text"
-            name="userCollegeName"
-            id="userCollegeName"
-            placeholder="Enter your college name"
-            className="w-full px-3 py-2 rounded-md border border-white bg-transparent
-                       placeholder-gray-400 text-white
-                       focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       required
-          />
-        </div>
+const [profileData, setprofileData] = useState({
+  userBio: "",
+  userLocation: "",
+  linkedInUrl: "",
+  gitHubUrl: "",
+  userProfilePic: null,
+  profileCover: null,
+});
+
+const inputChangeHandler = (e) => {
+  const { name, value } = e.target;
+  setprofileData((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+
+}
+
+
+const formSubmitHandler = (e) => {
+  e.preventDefault();
+    console.log(profileData);
+  setprofileData({
+    userBio: "",
+    userLocation: "",     
+    linkedInUrl: "",
+    gitHubUrl: "",
+    userProfilePic: null,
+    profileCover: null,
+  });
+
+};
+
+
+  return (
+    <div className=" bg-[#0f0f0f] my-18 rounded-2xl p-4 max-w-xl mx-auto border border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.25)] h-auto">
+      <p className="text-center text-xl font-semibold text-blue-400 my-4">Create Your Profile</p>
+      <form className="flex flex-col gap-6" onSubmit={formSubmitHandler}>
+        
+      
 
         {/* Bio */}
         <div className="flex flex-col w-full gap-1">
@@ -57,6 +54,9 @@ const CreateProfileForm = () => {
           <textarea
             name="userBio"
             id="userBio"
+            onChange={inputChangeHandler}
+            value={profileData.userBio}
+      
             placeholder="Write a short bio about yourself"
             rows={3}
             className="w-full px-3 py-2 rounded-md border border-white bg-transparent
@@ -78,6 +78,8 @@ const CreateProfileForm = () => {
             type="text"
             name="userLocation"
             id="userLocation"
+            onChange={inputChangeHandler}
+            value={profileData.userLocation}
             placeholder="City, State, Country"
             className="w-full px-3 py-2 rounded-md border border-white bg-transparent
                        placeholder-gray-400 text-white
@@ -98,6 +100,8 @@ const CreateProfileForm = () => {
             type="url"
             name="linkedInUrl"
             id="linkedInUrl"
+            onChange={inputChangeHandler}
+            value={profileData.linkedInUrl}
             placeholder="https://linkedin.com/in/username"
             className="w-full px-3 py-2 rounded-md border border-white bg-transparent
                        placeholder-gray-400 text-white
@@ -118,6 +122,8 @@ const CreateProfileForm = () => {
             type="url"
             name="gitHubUrl"
             id="gitHubUrl"
+            onChange={inputChangeHandler}
+            value={profileData.gitHubUrl}
             placeholder="https://github.com/username"
             className="w-full px-3 py-2 rounded-md border border-white bg-transparent
                        placeholder-gray-400 text-white
