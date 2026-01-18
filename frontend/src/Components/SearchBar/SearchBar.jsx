@@ -1,7 +1,12 @@
 import React from 'react'
 import { IoSearchOutline } from "react-icons/io5";
-
+import { useState } from 'react';
 const SearchBar = () => {
+  const [query, setQuery] = useState("")
+  let queryChangeHandler=(e)=>{
+    setQuery(e.target.value);
+  }
+
   return (
     <>
      <div className="hidden sm:flex  items-center h-[2em] w-[25%] bg-[#1e1e1e] rounded-full border-2 border-gray-400 hover:border-green-400  overflow-hidden">
@@ -12,6 +17,8 @@ const SearchBar = () => {
               type="text"
               placeholder="Search"
               className="flex-1 h-full outline-none pl-3 text-sm text-white "
+              onChange={queryChangeHandler}
+              value={query}
             />
           </div>
          <div className="flex sm:hidden">
