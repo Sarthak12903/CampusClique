@@ -4,7 +4,7 @@ import ProfilePage from "../Pages/ProfilePage/ProfilePage";
 import MessagesPage from "../Pages/MessagesPage/MessagesPage";
 import BookmarkPage from "../Pages/BookmarkPage/BookmarkPage";
 
-export default function RouteStructure() {
+export default function MainRouteStructure() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />

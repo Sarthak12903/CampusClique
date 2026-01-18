@@ -1,45 +1,58 @@
-import React from 'react'
-import SignUpWithGoogle from '../SignUpWithGoogle/SignUpWithGoogle'
-import PrimaryGradientButton from '../PrimaryGradientButton/PrimaryGradientButton'
+import React from "react";
+import { Link } from "react-router-dom";
+import SignUpWithGoogle from "../SignUpWithGoogle/SignUpWithGoogle";
+import PrimaryGradientButton from "../PrimaryGradientButton/PrimaryGradientButton";
 
 const LoginForm = () => {
-    return (
-        <div className=''>
-            <p className='font-semibold text-white text-xl my-5'>Log in <br />into your account</p>
-            <SignUpWithGoogle />
-            <p className='text-center text-xs my-8'>OR</p>
-            <div className="w-full space-y-10">
-                {/* Email */}
-                <input
-                    type="email"
-                    placeholder="Your Email"
-                    className="w-full bg-transparent border-b border-white
-               text-white placeholder-white text-sm 
-               py-2 outline-none focus:border-white"
-                />
+  return (
+    <div className="w-full max-w-md flex flex-col items-center justify-center gap-6">
+      {/* Heading */}
+      <h2 className="text-3xl font-bold mb-2 text-white">Login</h2>
 
-                {/* Password */}
-                <div className="relative">
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="w-full bg-transparent border-b border-white
-                 text-white placeholder-white  text-sm
-                 py-2 outline-none focus:border-white"
-                    />
-                    <span className="absolute right-0 -bottom-6 text-xs text-gray-400 cursor-pointer hover:text-green-400">
-                        Reset Password
-                    </span>
-                </div>
-                   <div className='space-y-2'>
-                     <PrimaryGradientButton buttonName="Login"  onClick={()=>{console.log("Login button Clicked")}}/>
-                    <p>Dont have account yet?<a href="#" className='text-blue-400 font-semibold'> Signup</a></p>
-                   </div>
+      {/* Login Form */}
+      <form className="w-full flex flex-col gap-4">
+        <input
+          type="email"
+          placeholder="Email"
+          className="p-3 rounded bg-gray-800 outline-none text-white placeholder-gray-400"
+        />
 
-            </div>
+        <input
+          type="password"
+          placeholder="Password"
+          className="p-3 rounded bg-gray-800 outline-none text-white placeholder-gray-400"
+        />
 
-        </div>
-    )
-}
+        {/* Reset password */}
+        <span className="text-xs text-gray-400 text-right cursor-pointer hover:text-blue-400">
+          Reset Password
+        </span>
 
-export default LoginForm
+        <PrimaryGradientButton
+          buttonName="Login"
+          onClick={() => console.log("Login button clicked")}
+        />
+      </form>
+
+      {/* OR Divider */}
+      <div className="w-full flex items-center gap-3 my-1">
+        <div className="flex-1 h-px bg-gray-700"></div>
+        <span className="text-gray-400 text-sm">OR</span>
+        <div className="flex-1 h-px bg-gray-700"></div>
+      </div>
+
+      {/* Google Login */}
+      <SignUpWithGoogle />
+
+      {/* Register Link */}
+      <p className="text-sm text-gray-400">
+        Don’t have an account?{" "}
+        <Link to="/" className="text-blue-500 hover:text-blue-400 font-medium">
+          Register
+        </Link>
+      </p>
+    </div>
+  );
+};
+
+export default LoginForm;
