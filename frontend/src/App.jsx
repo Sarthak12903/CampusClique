@@ -5,6 +5,7 @@ import RightSideBar from "./Components/RightSidebar/RightSideBar";
 import LoginPage from "./Pages/LoginPage/LoginPage";
 import { useState } from "react";
 import CreateProfile from "./Pages/CreateProfile/CreateProfile";
+import CreateAccountPage from "./Pages/CreateAccountPAge/CreateAccountPage";
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
@@ -16,14 +17,13 @@ function App() {
           onClose={() => setIsSidebarOpen(false)}/>
         <RouteStructure/>
       <RightSideBar/>
-      </div>
+      </div> 
 
-   {/* <LoginPage/> */}
-   {/* <CreateProfile/> */}
-</div>
+    </div>
+     </>
 
-    </>
-  );
+ 
+  )
 }
 
 export default App;
