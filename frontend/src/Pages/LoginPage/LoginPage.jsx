@@ -1,8 +1,18 @@
 import React from "react";
+import { Navigate } from "react-router-dom";
 import LoginPageVectorImg2 from "../../assets/Images/LoginPageVectorImg.png";
 import SignUpWithGoogle from "../../Components/SignUpWithGoogle/SignUpWithGoogle";
 import LoginForm from "../../Components/LoginForm/LoginForm";
+import { useAuthStore } from "../../store/useAuthStore";
+
 const LoginPage = () => {
+  const { authUser } = useAuthStore();
+
+  // If user is already logged in, redirect to homepage
+  if (authUser) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <div className="bg-black min-h-[100dvh] w-full text-white overflow-hidden flex  flex-col md:flex-row items-center justify-center gap-10 md:gap-0 ">
       <div className="max-sm:m-10 lg:ml-30  w-full md:w-1/2 flex items-center justify-center">

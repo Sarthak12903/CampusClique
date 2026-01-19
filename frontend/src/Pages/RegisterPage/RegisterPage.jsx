@@ -1,17 +1,23 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import LoginPageVectorImg2 from "../../assets/Images/LoginPageVectorImg2.png";
 import SignUpWithGoogle from "../../Components/SignUpWithGoogle/SignUpWithGoogle";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../../store/useAuthStore";
+
 const CreateAccountPage = () => {
   const [fullname, setFullname] = useState("");
   const [collegeName, setCollegeName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
-  const { register, isRegistering } = useAuthStore();
+  const { register, isRegistering, authUser } = useAuthStore();
+
+  // If user is already logged in, redirect to homepage
+  if (authUser) {
+    return <Navigate to="/" replace />;
+  }
   const validateForm = () => {
     if (!fullname.trim()) {
       toast.error("Full name is required");
