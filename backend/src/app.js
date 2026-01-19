@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
+import postRoutes from "./routes/post.routes.js";
 import { connectdb } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 const app = express();
@@ -18,6 +19,7 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/posts", postRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is listening to ${PORT}`);
