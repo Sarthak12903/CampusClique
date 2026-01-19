@@ -29,6 +29,8 @@ export const useAuthStore = create((set, get) => ({
         set({ authUser: res.data });
         // Verify the session is properly established
         await get().checkAuth();
+        // Clear browser history to prevent back button going to auth pages
+        window.history.replaceState(null, "", "/");
       }
     } catch (error) {
       toast.error(error.response?.data?.message);
@@ -49,6 +51,8 @@ export const useAuthStore = create((set, get) => ({
         set({ authUser: res.data });
         // Verify the session is properly established
         await get().checkAuth();
+        // Clear browser history to prevent back button going to auth pages
+        window.history.replaceState(null, "", "/");
       }
     } catch (error) {
       toast.error(error.response?.data?.message);
