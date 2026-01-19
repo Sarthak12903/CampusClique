@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { FaCog, FaBell, FaShield, FaMoon, FaGlobe } from "react-icons/fa";
-import { MdOutlinePrivacyTip } from "react-icons/md";
+import { FaCog, FaBell, FaMoon, FaGlobe } from "react-icons/fa";
+import { MdOutlinePrivacyTip, MdSecurity } from "react-icons/md";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -120,7 +120,7 @@ export default function SettingsPage() {
         {/* Privacy & Security */}
         <div className="bg-[#1e1e1e] border border-gray-700 rounded-xl p-6 mb-4">
           <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-            <FaShield className="text-cyan-400" />
+            <MdSecurity className="text-cyan-400 text-2xl" />
             Privacy & Security
           </h3>
           <div className="space-y-4">
@@ -147,7 +147,7 @@ export default function SettingsPage() {
             </button>
             <button className="w-full text-left px-4 py-2 text-gray-400 hover:text-white hover:bg-gray-900 rounded transition">
               <div className="flex items-center gap-2">
-                <FaShield className="text-cyan-400" />
+                <MdSecurity className="text-cyan-400" />
                 <span>Two-Factor Authentication</span>
               </div>
             </button>
