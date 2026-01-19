@@ -9,11 +9,11 @@ import explore from "../../assets/GradientIcons/explore.png";
 
 const sidebarItems = [
   { id: 1, name: "Home", iconImg: home, path: "/" },
-  { id: 2, name: "Community", iconImg: community, path: "#" },
-  { id: 3, name: "Explore", iconImg: explore, path: "#" },
+  { id: 2, name: "Community", iconImg: community, path: "/community" },
+  { id: 3, name: "Explore", iconImg: explore, path: "/explore" },
   { id: 4, name: "Bookmarks", iconImg: bookmark, path: "/bookmarks" },
   { id: 5, name: "Messages", iconImg: messages, path: "/messages" },
-  { id: 6, name: "Settings", iconImg: settings, path: "#" },
+  { id: 6, name: "Settings", iconImg: settings, path: "/settings" },
 ];
 
 export default function LeftSideBar({ isOpen, onClose }) {

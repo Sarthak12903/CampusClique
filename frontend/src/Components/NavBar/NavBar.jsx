@@ -29,15 +29,15 @@ export default function NavBar({ onMenuClick }) {
 
       {/* Profile Tab */}
       <div
-        className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full border-2 border-[#34D399] cursor-pointer hover:bg-gray-900 transition"
+        className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full border-2 border-[#34D399] cursor-pointer hover:bg-gray-900 transition max-w-xs"
         onClick={() => setShowDropdown(!showDropdown)}
       >
         <img
           src={ProfilePic}
           alt="ProfilePic"
-          className="rounded-full h-8 w-8"
+          className="rounded-full h-8 w-8 flex-shrink-0"
         />
-        <p className="text-white font-semibold text-sm hidden lg:block whitespace-nowrap">
+        <p className="text-white font-semibold text-sm hidden lg:block truncate">
           {authUser?.fullname || "User"}
         </p>
       </div>
@@ -74,17 +74,6 @@ export default function NavBar({ onMenuClick }) {
         src={ProfilePic}
         alt="ProfilePic"
         className="flex md:hidden rounded-full h-8 w-8 cursor-pointer"
-        onClick={() => setShowDropdown(!showDropdown)}
-      />
-    </div>
-  );
-}
-
-      {/* MobileTab  */}
-      <img
-        src={ProfilePic}
-        alt="ProfilePic"
-        className="flex md:hidden rounded-full h-8 w-8  border-2 border-white-400 cursor-pointer"
         onClick={() => setShowDropdown(!showDropdown)}
       />
     </div>

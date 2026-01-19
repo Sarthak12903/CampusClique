@@ -14,25 +14,40 @@ export default function ProfilePage() {
   }, []);
 
   return (
-    <div className="py-4  max-sm:px-5 sm:px-20 md:px-0 w-full md:w-[35%]">
+    <div className="w-full">
       <ProfileTab />
       <ProfileDescription />
-      <div className="flex p-2 items-center justify-center gap-2 mt-2">
-        <SecondaryGradientButton
-          buttonName="Posts"
+      <div className="flex p-4 items-center justify-start gap-4 border-b border-gray-700">
+        <button
           onClick={() => setActiveTab("posts")}
-          style={activeTab === "posts" ? { opacity: 1 } : { opacity: 0.6 }}
-        />
-        <SecondaryGradientButton
-          buttonName="Bookmarks"
+          className={`px-4 py-2 rounded-full font-semibold transition ${
+            activeTab === "posts"
+              ? "bg-cyan-500 text-black"
+              : "text-gray-500 hover:text-white"
+          }`}
+        >
+          Posts
+        </button>
+        <button
           onClick={() => setActiveTab("bookmarks")}
-          style={activeTab === "bookmarks" ? { opacity: 1 } : { opacity: 0.6 }}
-        />
-        <SecondaryGradientButton
-          buttonName="Liked"
+          className={`px-4 py-2 rounded-full font-semibold transition ${
+            activeTab === "bookmarks"
+              ? "bg-cyan-500 text-black"
+              : "text-gray-500 hover:text-white"
+          }`}
+        >
+          Bookmarks
+        </button>
+        <button
           onClick={() => setActiveTab("liked")}
-          style={activeTab === "liked" ? { opacity: 1 } : { opacity: 0.6 }}
-        />
+          className={`px-4 py-2 rounded-full font-semibold transition ${
+            activeTab === "liked"
+              ? "bg-cyan-500 text-black"
+              : "text-gray-500 hover:text-white"
+          }`}
+        >
+          Liked
+        </button>
       </div>
 
       {activeTab === "posts" && (
