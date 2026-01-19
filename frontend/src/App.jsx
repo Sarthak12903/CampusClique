@@ -8,9 +8,12 @@ import CreateProfile from "./Pages/CreateProfile/CreateProfile";
 import CreateAccountPage from "./Pages/RegisterPage/RegisterPage";
 import RegisterPage from "./Pages/RegisterPage/RegisterPage";
 import AuthRoute from "./Routes/AuthRoute";
+import { useAuthStore } from "./store/useAuthStore";
+
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isAuthenticated = false;
+  const { authUser } = useAuthStore();
+  const isAuthenticated = !!authUser;
 
   return (
     <>
