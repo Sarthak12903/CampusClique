@@ -7,6 +7,20 @@ export const useAuthStore = create((set, get) => ({
   isRegistering: false,
   isLoggingIn: false,
 
+  checkAuth: async () => {
+    try {
+      console.log("Checking is under progress");
+      const res = await axiosInstance.get("/auth/check");
+      set({ authUser: res.data });
+    } catch (error) {
+      console.log("error in useAuthStore");
+      set({ authUser: null });
+      console.log("Error in checkAuth useAuthStore ", error);
+    } finally {
+      console.log("Check is false");
+    }
+  },
+
   register: async (data) => {
     set({ isRegistering: true });
     try {
@@ -14,6 +28,8 @@ export const useAuthStore = create((set, get) => ({
       if (res) {
         toast.success("Registered successfully!!");
         set({ authUser: res.data });
+        // Verify the session is properly established
+        await get().checkAuth();
       }
     } catch (error) {
       toast.error(error.response?.data?.message);
@@ -22,6 +38,39 @@ export const useAuthStore = create((set, get) => ({
       );
     } finally {
       set({ isRegistering: false });
+    }
+  },
+
+  login: async (data) => {
+    set({ isLoggingIn: true });
+    try {
+      const res = await axiosInstance.post("/auth/login", data);
+      if (res) {
+        toast.success("Login successful!!");
+        set({ authUser: res.data });
+        // Verify the session is properly established
+        await get().checkAuth();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+      console.log(
+        `Error authStore Login : ${error.response?.data?.message || "Login Failed"}`,
+      );
+    } finally {
+      set({ isLoggingIn: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+      toast.success("Logged out successfully!!");
+      set({ authUser: null });
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+      console.log(
+        `Error authStore Logout : ${error.response?.data?.message || "Logout Failed"}`,
+      );
     }
   },
 }));

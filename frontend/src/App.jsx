@@ -8,13 +8,18 @@ import CreateProfile from "./Pages/CreateProfile/CreateProfile";
 import CreateAccountPage from "./Pages/RegisterPage/RegisterPage";
 import RegisterPage from "./Pages/RegisterPage/RegisterPage";
 import AuthRoute from "./Routes/AuthRoute";
+import { useAuthStore } from "./store/useAuthStore";
+import { useEffect } from "react";
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isAuthenticated = false;
-
+  const { authUser, checkAuth } = useAuthStore();
+  useEffect(() => {
+    checkAuth();
+  }, []);
+  console.log({ authUser });
   return (
     <>
-      {isAuthenticated ? (
+      {authUser ? (
         <div className="bg-black">
           <NavBar onMenuClick={() => setIsSidebarOpen(true)} />
           <div className="flex w-screen items-start max-sm:px-5 lg:px-40 justify-around   lg:gap-10 ">
