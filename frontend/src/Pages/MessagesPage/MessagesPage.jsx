@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaMessage, FaSearch, FaPaperPlane } from "react-icons/fa6";
+import { FaEnvelope, FaSearch, FaPaperPlane } from "react-icons/fa";
 
 export default function MessagesPage() {
   const [selectedChat, setSelectedChat] = useState(null);
@@ -50,7 +50,7 @@ export default function MessagesPage() {
         {/* Header */}
         <div className="sticky top-16 z-10 bg-[#1e1e1e] border-b border-gray-700 p-4">
           <div className="flex items-center gap-3">
-            <FaMessage className="text-cyan-400 text-2xl" />
+            <FaEnvelope className="text-cyan-400 text-2xl" />
             <h2 className="text-white font-bold text-xl">Messages</h2>
           </div>
         </div>
@@ -170,7 +170,7 @@ export default function MessagesPage() {
           </>
         ) : (
           <div className="flex flex-col items-center justify-center h-full">
-            <FaMessage className="text-gray-600 text-6xl mb-4" />
+            <FaEnvelope className="text-gray-600 text-6xl mb-4" />
             <p className="text-gray-400 text-lg">Select a conversation</p>
             <p className="text-gray-500 text-sm mt-2">
               Choose from your messages to start chatting

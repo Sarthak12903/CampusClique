@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  FaCog,
-  FaBell,
-  FaShield,
-  FaMoon,
-  FaVolumeUp,
-  FaGlobe,
-} from "react-icons/fa";
+import { FaCog, FaBell, FaShield, FaMoon, FaGlobe } from "react-icons/fa";
 import { MdOutlinePrivacyTip } from "react-icons/md";
 
 export default function SettingsPage() {
