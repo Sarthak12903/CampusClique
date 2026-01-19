@@ -62,6 +62,20 @@ const userSchema = new mongoose.Schema(
     profileBackground: {
       type: String, // store image URL or file path
     },
+
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

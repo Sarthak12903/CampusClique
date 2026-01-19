@@ -54,6 +54,9 @@ export const register = async (req, res) => {
       location: user.location,
       linkedinUrl: user.linkedinUrl,
       githubUrl: user.githubUrl,
+      followers: user.followers || [],
+      following: user.following || [],
+      createdAt: user.createdAt,
       token,
     });
   } catch (error) {
@@ -119,6 +122,9 @@ export const login = async (req, res) => {
       location: user.location,
       linkedinUrl: user.linkedinUrl,
       githubUrl: user.githubUrl,
+      followers: user.followers || [],
+      following: user.following || [],
+      createdAt: user.createdAt,
       token,
     });
   } catch (error) {
@@ -134,5 +140,142 @@ export const logout = async (req, res) => {
   } catch (error) {
     console.error("Logout error:", error);
     res.status(500).json({ message: "Server error during logout" });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const {
+      collegeName,
+      bio,
+      location,
+      linkedinUrl,
+      githubUrl,
+      profilePhoto,
+      profileBackground,
+    } = req.body;
+
+    const updateData = {};
+    if (collegeName !== undefined) updateData.collegeName = collegeName;
+    if (bio !== undefined) updateData.bio = bio;
+    if (location !== undefined) updateData.location = location;
+    if (linkedinUrl !== undefined) updateData.linkedinUrl = linkedinUrl;
+    if (githubUrl !== undefined) updateData.githubUrl = githubUrl;
+    if (profilePhoto !== undefined) updateData.profilePhoto = profilePhoto;
+    if (profileBackground !== undefined) updateData.profileBackground = profileBackground;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true },
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Update profile error:", error);
+    res.status(500).json({ message: "Server error during profile update" });
+  }
+};
+
+export const followUser = async (req, res) => {
+  try {
+    const followerId = req.userId; // Current user
+    const { userId: followingId } = req.params; // User to follow
+
+    if (followerId === followingId) {
+      return res.status(400).json({ message: "Cannot follow yourself" });
+    }
+
+    const currentUser = await User.findById(followerId);
+    const userToFollow = await User.findById(followingId);
+
+    if (!currentUser || !userToFollow) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if already following
+    if (currentUser.following.includes(followingId)) {
+      return res.status(400).json({ message: "Already following this user" });
+    }
+
+    // Add to following list
+    currentUser.following.push(followingId);
+    // Add to followers list
+    userToFollow.followers.push(followerId);
+
+    await currentUser.save();
+    await userToFollow.save();
+
+    res.status(200).json({
+      message: "Followed successfully",
+      user: currentUser.select("-password"),
+    });
+  } catch (error) {
+    console.error("Follow user error:", error);
+    res.status(500).json({ message: "Server error during follow" });
+  }
+};
+
+export const unfollowUser = async (req, res) => {
+  try {
+    const followerId = req.userId; // Current user
+    const { userId: followingId } = req.params; // User to unfollow
+
+    const currentUser = await User.findById(followerId);
+    const userToUnfollow = await User.findById(followingId);
+
+    if (!currentUser || !userToUnfollow) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if following
+    if (!currentUser.following.includes(followingId)) {
+      return res.status(400).json({ message: "Not following this user" });
+    }
+
+    // Remove from following list
+    currentUser.following = currentUser.following.filter(
+      (id) => id.toString() !== followingId,
+    );
+    // Remove from followers list
+    userToUnfollow.followers = userToUnfollow.followers.filter(
+      (id) => id.toString() !== followerId,
+    );
+
+    await currentUser.save();
+    await userToUnfollow.save();
+
+    res.status(200).json({
+      message: "Unfollowed successfully",
+      user: currentUser.select("-password"),
+    });
+  } catch (error) {
+    console.error("Unfollow user error:", error);
+    res.status(500).json({ message: "Server error during unfollow" });
+  }
+};
+
+export const getUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId)
+      .select("-password")
+      .populate("followers", "-password")
+      .populate("following", "-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Get user profile error:", error);
+    res.status(500).json({ message: "Server error fetching profile" });
   }
 };
