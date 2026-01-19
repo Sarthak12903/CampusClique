@@ -12,11 +12,21 @@ import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { authUser, checkAuth } = useAuthStore();
+  const { authUser, checkAuth, isInitializing } = useAuthStore();
   useEffect(() => {
     checkAuth();
   }, []);
-  console.log({ authUser });
+  console.log({ authUser, isInitializing });
+
+  // Show loading screen while initializing
+  if (isInitializing) {
+    return (
+      <div className="flex items-center justify-center w-screen h-screen bg-black">
+        <div className="text-white text-2xl font-semibold">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <>
       {authUser ? (
