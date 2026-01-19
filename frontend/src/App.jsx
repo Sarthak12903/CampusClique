@@ -6,6 +6,7 @@ import LoginPage from "./Pages/LoginPage/LoginPage";
 import { useState } from "react";
 import CreateProfile from "./Pages/CreateProfile/CreateProfile";
 import CreateAccountPage from "./Pages/CreateAccountPAge/CreateAccountPage";
+import Comments from "./Components/CommentForm/CommentForm";
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
@@ -20,7 +21,8 @@ function App() {
       </div> 
 
     </div> */}
-    <CreateProfile/>
+    {/* <CreateProfile/> */}
+    <Comments/>
      </>
 
  
