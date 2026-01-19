@@ -4,19 +4,31 @@ import SecondaryGradientButton from "../../Components/SecondaryGradientButton/Se
 import Post from "../../Components/Post/Post";
 import { useState, useEffect } from "react";
 import { usePostStore } from "../../store/usePostStore";
+import { useAuthStore } from "../../store/useAuthStore";
+import FollowButton from "../../Components/FollowButton/FollowButton";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("posts");
   const { userPosts, isLoadingPosts, getUserPosts } = usePostStore();
+  const { authUser } = useAuthStore();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     getUserPosts();
   }, []);
 
+  useEffect(() => {
+    // Refresh profile data when authUser changes
+    setRefreshKey((prev) => prev + 1);
+  }, [authUser]);
+
   return (
-    <div className="w-full">
+    <div className="w-full" key={refreshKey}>
       <ProfileTab />
-      <ProfileDescription />
+      <div className="flex items-start justify-between p-4 border-b border-gray-700">
+        <ProfileDescription />
+        <FollowButton targetUserId={""} />
+      </div>
       <div className="flex p-4 items-center justify-start gap-4 border-b border-gray-700">
         <button
           onClick={() => setActiveTab("posts")}

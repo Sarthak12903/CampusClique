@@ -30,15 +30,15 @@ function App() {
   return (
     <>
       {authUser ? (
-        <div className="bg-black min-h-screen">
+        <div className="bg-black min-h-screen w-full flex flex-col">
           <NavBar onMenuClick={() => setIsSidebarOpen(true)} />
-          <div className="flex w-full">
+          <div className="flex w-full flex-1 overflow-hidden">
             <LeftSideBar
               isOpen={isSidebarOpen}
               onClose={() => setIsSidebarOpen(false)}
             />
-            <div className="flex-1 flex justify-center">
-              <div className="w-full md:w-[600px] lg:w-[700px] border-l border-r border-gray-700">
+            <div className="flex-1 flex justify-center overflow-y-auto bg-black">
+              <div className="w-full md:w-[600px] lg:w-[700px] border-l border-r border-gray-700 bg-black">
                 <RouteStructure />
               </div>
             </div>

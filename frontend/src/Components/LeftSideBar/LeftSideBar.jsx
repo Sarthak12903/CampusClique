@@ -36,7 +36,7 @@ export default function LeftSideBar({ isOpen, onClose }) {
       )}
       <div
         className={`
-          fixed top-16 left-0 z-50
+          fixed top-16 left-0 z-30
           h-[calc(100vh-4rem)]
           w-[75%]
           bg-black

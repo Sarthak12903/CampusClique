@@ -7,6 +7,7 @@ export const useAuthStore = create((set, get) => ({
   isRegistering: false,
   isLoggingIn: false,
   isInitializing: true,
+  isUpdatingProfile: false,
 
   checkAuth: async () => {
     try {
@@ -73,6 +74,56 @@ export const useAuthStore = create((set, get) => ({
       toast.error(error.response?.data?.message);
       console.log(
         `Error authStore Logout : ${error.response?.data?.message || "Logout Failed"}`,
+      );
+    }
+  },
+
+  updateProfile: async (profileData) => {
+    set({ isUpdatingProfile: true });
+    try {
+      const res = await axiosInstance.put("/auth/update-profile", profileData);
+      if (res && res.data) {
+        set({ authUser: res.data });
+        toast.success("Profile updated successfully!!");
+        return true; // Return success flag
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update profile");
+      console.log(
+        `Error updating profile : ${error.response?.data?.message || "Update Failed"}`,
+      );
+      return false; // Return failure flag
+    } finally {
+      set({ isUpdatingProfile: false });
+    }
+  },
+
+  followUser: async (userId) => {
+    try {
+      const res = await axiosInstance.post(`/auth/follow/${userId}`);
+      if (res) {
+        toast.success("Followed successfully!!");
+        set({ authUser: res.data.user || res.data });
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to follow user");
+      console.log(
+        `Error following user : ${error.response?.data?.message || "Follow Failed"}`,
+      );
+    }
+  },
+
+  unfollowUser: async (userId) => {
+    try {
+      const res = await axiosInstance.post(`/auth/unfollow/${userId}`);
+      if (res) {
+        toast.success("Unfollowed successfully!!");
+        set({ authUser: res.data.user || res.data });
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to unfollow user");
+      console.log(
+        `Error unfollowing user : ${error.response?.data?.message || "Unfollow Failed"}`,
       );
     }
   },
