@@ -1,7 +1,7 @@
 import ProfileDescription from "../../Components/ProfileDescription/ProfileDescription";
 import ProfileTab from "../../Components/ProfileTab/ProfileTab";
 import SecondaryGradientButton from "../../Components/SecondaryGradientButton/SecondaryGradientButton";
-import Post from '../../Components/Post/Post'
+import Post from "../../Components/Post/Post";
 import { useState, useEffect } from "react";
 import { usePostStore } from "../../store/usePostStore";
 
@@ -15,21 +15,21 @@ export default function ProfilePage() {
 
   return (
     <div className="py-4  max-sm:px-5 sm:px-20 md:px-0 w-full md:w-[35%]">
-      <ProfileTab/>
-      <ProfileDescription/>
+      <ProfileTab />
+      <ProfileDescription />
       <div className="flex p-2 items-center justify-center gap-2 mt-2">
-        <SecondaryGradientButton 
-          buttonName="Posts" 
+        <SecondaryGradientButton
+          buttonName="Posts"
           onClick={() => setActiveTab("posts")}
           style={activeTab === "posts" ? { opacity: 1 } : { opacity: 0.6 }}
         />
-        <SecondaryGradientButton 
-          buttonName="Bookmarks" 
+        <SecondaryGradientButton
+          buttonName="Bookmarks"
           onClick={() => setActiveTab("bookmarks")}
           style={activeTab === "bookmarks" ? { opacity: 1 } : { opacity: 0.6 }}
         />
-        <SecondaryGradientButton 
-          buttonName="Liked" 
+        <SecondaryGradientButton
+          buttonName="Liked"
           onClick={() => setActiveTab("liked")}
           style={activeTab === "liked" ? { opacity: 1 } : { opacity: 0.6 }}
         />

@@ -43,7 +43,7 @@ export const usePostStore = create((set, get) => ({
       const res = await axiosInstance.post("/posts", postData);
       set((state) => ({
         posts: [res.data.post, ...state.posts],
-        userPosts: [res.data.post, ...state.userPosts]
+        userPosts: [res.data.post, ...state.userPosts],
       }));
       toast.success("Post created successfully!");
       return res.data.post;
@@ -62,11 +62,11 @@ export const usePostStore = create((set, get) => ({
       // Update posts list
       set((state) => ({
         posts: state.posts.map((post) =>
-          post._id === postId ? res.data.post : post
+          post._id === postId ? res.data.post : post,
         ),
         userPosts: state.userPosts.map((post) =>
-          post._id === postId ? res.data.post : post
-        )
+          post._id === postId ? res.data.post : post,
+        ),
       }));
     } catch (error) {
       console.log("Error liking post:", error);
@@ -78,15 +78,15 @@ export const usePostStore = create((set, get) => ({
   addComment: async (postId, text) => {
     try {
       const res = await axiosInstance.post(`/posts/${postId}/comment`, {
-        text
+        text,
       });
       set((state) => ({
         posts: state.posts.map((post) =>
-          post._id === postId ? res.data.post : post
+          post._id === postId ? res.data.post : post,
         ),
         userPosts: state.userPosts.map((post) =>
-          post._id === postId ? res.data.post : post
-        )
+          post._id === postId ? res.data.post : post,
+        ),
       }));
       toast.success("Comment added!");
       return res.data.post;
@@ -102,7 +102,7 @@ export const usePostStore = create((set, get) => ({
       await axiosInstance.delete(`/posts/${postId}`);
       set((state) => ({
         posts: state.posts.filter((post) => post._id !== postId),
-        userPosts: state.userPosts.filter((post) => post._id !== postId)
+        userPosts: state.userPosts.filter((post) => post._id !== postId),
       }));
       toast.success("Post deleted!");
     } catch (error) {
@@ -114,19 +114,21 @@ export const usePostStore = create((set, get) => ({
   // Delete comment
   deleteComment: async (postId, commentId) => {
     try {
-      const res = await axiosInstance.delete(`/posts/${postId}/comment/${commentId}`);
+      const res = await axiosInstance.delete(
+        `/posts/${postId}/comment/${commentId}`,
+      );
       set((state) => ({
         posts: state.posts.map((post) =>
-          post._id === postId ? res.data.post : post
+          post._id === postId ? res.data.post : post,
         ),
         userPosts: state.userPosts.map((post) =>
-          post._id === postId ? res.data.post : post
-        )
+          post._id === postId ? res.data.post : post,
+        ),
       }));
       toast.success("Comment deleted!");
     } catch (error) {
       console.log("Error deleting comment:", error);
       toast.error("Failed to delete comment");
     }
-  }
+  },
 }));

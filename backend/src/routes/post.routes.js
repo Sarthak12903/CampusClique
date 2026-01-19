@@ -8,7 +8,7 @@ import {
   deletePost,
   likePost,
   addComment,
-  deleteComment
+  deleteComment,
 } from "../controllers/post.controllers.js";
 import { protectRoute } from "../middlewares/auth.middlewares.js";
 

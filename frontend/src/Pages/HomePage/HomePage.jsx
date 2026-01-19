@@ -1,5 +1,5 @@
 import CreatePost from "../../Components/CreatePost/CreatePost";
-import Post from "../../Components/Post/Post"
+import Post from "../../Components/Post/Post";
 import { useEffect } from "react";
 import { usePostStore } from "../../store/usePostStore";
 
@@ -11,8 +11,8 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="py-4  max-sm:p-x-20 sm:px-5 w-full md:w-[35%]">
-      <CreatePost/>
+    <div className="w-full">
+      <CreatePost />
       {isLoadingPosts ? (
         <div className="flex justify-center items-center py-10">
           <p className="text-gray-400">Loading posts...</p>
@@ -21,7 +21,9 @@ export default function HomePage() {
         posts.map((post) => <Post key={post._id} post={post} />)
       ) : (
         <div className="flex justify-center items-center py-10">
-          <p className="text-gray-400">No posts yet. Create one to get started!</p>
+          <p className="text-gray-400">
+            No posts yet. Create one to get started!
+          </p>
         </div>
       )}
     </div>

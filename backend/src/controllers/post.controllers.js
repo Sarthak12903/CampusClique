@@ -16,7 +16,7 @@ export const createPost = async (req, res) => {
       description,
       image,
       video,
-      category: category || "general"
+      category: category || "general",
     });
 
     // Populate user details
@@ -24,7 +24,7 @@ export const createPost = async (req, res) => {
 
     res.status(201).json({
       message: "Post created successfully",
-      post
+      post,
     });
   } catch (error) {
     console.error("Create post error:", error);
@@ -51,7 +51,7 @@ export const getAllPosts = async (req, res) => {
 export const getUserPosts = async (req, res) => {
   try {
     const userId = req.userId;
-    
+
     const posts = await Post.find({ user: userId })
       .populate("user", "-password")
       .populate("comments.user", "-password")
@@ -98,7 +98,9 @@ export const updatePost = async (req, res) => {
     }
 
     if (post.user.toString() !== userId.toString()) {
-      return res.status(403).json({ message: "Not authorized to update this post" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this post" });
     }
 
     if (description) post.description = description;
@@ -111,7 +113,7 @@ export const updatePost = async (req, res) => {
 
     res.status(200).json({
       message: "Post updated successfully",
-      post
+      post,
     });
   } catch (error) {
     console.error("Update post error:", error);
@@ -132,7 +134,9 @@ export const deletePost = async (req, res) => {
     }
 
     if (post.user.toString() !== userId.toString()) {
-      return res.status(403).json({ message: "Not authorized to delete this post" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this post" });
     }
 
     await Post.findByIdAndDelete(postId);
@@ -159,7 +163,9 @@ export const likePost = async (req, res) => {
     // Check if already liked
     if (post.likes.includes(userId)) {
       // Unlike the post
-      post.likes = post.likes.filter(id => id.toString() !== userId.toString());
+      post.likes = post.likes.filter(
+        (id) => id.toString() !== userId.toString(),
+      );
     } else {
       // Like the post
       post.likes.push(userId);
@@ -170,7 +176,7 @@ export const likePost = async (req, res) => {
 
     res.status(200).json({
       message: post.likes.includes(userId) ? "Post liked" : "Post unliked",
-      post
+      post,
     });
   } catch (error) {
     console.error("Like post error:", error);
@@ -197,7 +203,7 @@ export const addComment = async (req, res) => {
 
     post.comments.push({
       user: userId,
-      text: text.trim()
+      text: text.trim(),
     });
 
     await post.save();
@@ -206,7 +212,7 @@ export const addComment = async (req, res) => {
 
     res.status(201).json({
       message: "Comment added successfully",
-      post
+      post,
     });
   } catch (error) {
     console.error("Add comment error:", error);
@@ -233,7 +239,9 @@ export const deleteComment = async (req, res) => {
     }
 
     if (comment.user.toString() !== userId.toString()) {
-      return res.status(403).json({ message: "Not authorized to delete this comment" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this comment" });
     }
 
     post.comments.id(commentId).remove();
@@ -243,7 +251,7 @@ export const deleteComment = async (req, res) => {
 
     res.status(200).json({
       message: "Comment deleted successfully",
-      post
+      post,
     });
   } catch (error) {
     console.error("Delete comment error:", error);

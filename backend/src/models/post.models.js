@@ -6,25 +6,25 @@ const postSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
 
-    // Post text 
+    // Post text
     description: {
       type: String,
       required: true,
       trim: true,
-      maxlength: 100   //char limit
+      maxlength: 100, //char limit
     },
 
     // Optional image
     image: {
-      type: String
+      type: String,
     },
 
     // Optional video
     video: {
-      type: String
+      type: String,
     },
 
     // Post category
@@ -37,17 +37,17 @@ const postSchema = new mongoose.Schema(
         "coding",
         "sports",
         "academics",
-        "announcement"
+        "announcement",
       ],
-      default: "general"
+      default: "general",
     },
 
     // Likes
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-      }
+        ref: "User",
+      },
     ],
 
     // Comments
@@ -55,21 +55,19 @@ const postSchema = new mongoose.Schema(
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "User"
+          ref: "User",
         },
         text: String,
         createdAt: {
           type: Date,
-          default: Date.now
-        }
-      }
+          default: Date.now,
+        },
+      },
     ],
-
-
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
 const Post = mongoose.model("Post", postSchema);
