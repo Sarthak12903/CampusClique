@@ -1,5 +1,4 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
 import LoginPageVectorImg2 from "../../assets/Images/LoginPageVectorImg.png";
 import SignUpWithGoogle from "../../Components/SignUpWithGoogle/SignUpWithGoogle";
 import LoginForm from "../../Components/LoginForm/LoginForm";
@@ -8,9 +7,10 @@ import { useAuthStore } from "../../store/useAuthStore";
 const LoginPage = () => {
   const { authUser } = useAuthStore();
 
-  // If user is already logged in, redirect to homepage
+  // Don't render the page if user is authenticated
+  // The App component will handle showing the main UI
   if (authUser) {
-    return <Navigate to="/" replace />;
+    return null;
   }
 
   return (

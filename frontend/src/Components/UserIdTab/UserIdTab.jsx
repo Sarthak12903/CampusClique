@@ -2,8 +2,9 @@ import React from "react";
 import DefaultProfilePic from "../../assets/GradientIcons/ProfilePic.png";
 import { useAuthStore } from "../../store/useAuthStore";
 
-const UserIdTab = () => {
+const UserIdTab = ({ user }) => {
   const { authUser } = useAuthStore();
+  const displayUser = user || authUser;
 
   return (
     <div
@@ -12,7 +13,7 @@ const UserIdTab = () => {
                 bg-black px-3 sm:px-4 py-2 rounded-xl text-white max-w-xs sm:max-w-md"
     >
       <img
-        src={authUser?.profilePhoto || DefaultProfilePic}
+        src={displayUser?.profilePhoto || DefaultProfilePic}
         alt="PP"
         className="h-16 w-16 rounded-full flex-shrink-0 object-cover"
         onError={(e) => {
@@ -20,9 +21,9 @@ const UserIdTab = () => {
         }}
       />
       <div className="min-w-0 flex-1">
-        <p className="font-bold text-sm">{authUser?.fullname || "User"}</p>
+        <p className="font-bold text-sm">{displayUser?.fullname || "User"}</p>
         <p className="text-xs text-gray-400">
-          {authUser?.collegeName || "College"}
+          {displayUser?.collegeName || "College"}
         </p>
       </div>
     </div>

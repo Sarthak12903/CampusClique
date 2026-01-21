@@ -10,9 +10,16 @@ import RegisterPage from "./Pages/RegisterPage/RegisterPage";
 import AuthRoute from "./Routes/AuthRoute";
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
+import { useLocation } from "react-router-dom";
+import MessagesPage from "./Pages/MessagesPage/MessagesPage";
+
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { authUser, checkAuth, isInitializing } = useAuthStore();
+  const location = useLocation();
+  const isMessagesPage = location.pathname === "/messages";
+
   useEffect(() => {
     checkAuth();
   }, []);
@@ -30,19 +37,27 @@ function App() {
   return (
     <>
       {authUser ? (
-        <div className="bg-black min-h-screen w-full flex flex-col">
+        <div className="bg-black h-screen w-full flex flex-col overflow-hidden">
           <NavBar onMenuClick={() => setIsSidebarOpen(true)} />
           <div className="flex w-full flex-1 overflow-hidden">
             <LeftSideBar
               isOpen={isSidebarOpen}
               onClose={() => setIsSidebarOpen(false)}
             />
-            <div className="flex-1 flex justify-center overflow-y-auto bg-black">
-              <div className="w-full md:w-[600px] lg:w-[700px] border-l border-r border-gray-700 bg-black">
-                <RouteStructure />
+            {isMessagesPage ? (
+              <div className="flex-1 bg-black overflow-hidden">
+                <MessagesPage />
               </div>
-            </div>
-            <RightSideBar />
+            ) : (
+              <>
+                <div className="flex-1 flex justify-center overflow-y-auto bg-black">
+                  <div className="w-full md:w-[600px] lg:w-[700px] border-l border-r border-gray-700 bg-black">
+                    <RouteStructure />
+                  </div>
+                </div>
+                <RightSideBar />
+              </>
+            )}
           </div>
         </div>
       ) : (
@@ -50,6 +65,7 @@ function App() {
           <AuthRoute />
         </>
       )}
+      <Toaster position="top-center" />
     </>
   );
 }

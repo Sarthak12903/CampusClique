@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import LoginPageVectorImg2 from "../../assets/Images/LoginPageVectorImg2.png";
 import SignUpWithGoogle from "../../Components/SignUpWithGoogle/SignUpWithGoogle";
 import { useState } from "react";
@@ -14,9 +14,10 @@ const CreateAccountPage = () => {
   const [rePassword, setRePassword] = useState("");
   const { register, isRegistering, authUser } = useAuthStore();
 
-  // If user is already logged in, redirect to homepage
+  // Don't render the page if user is authenticated
+  // The App component will handle showing the main UI
   if (authUser) {
-    return <Navigate to="/" replace />;
+    return null;
   }
   const validateForm = () => {
     if (!fullname.trim()) {

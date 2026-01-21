@@ -4,19 +4,24 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { useState, useEffect } from "react";
 import EditProfileModal from "../EditProfileModal/EditProfileModal";
 
-const ProfileTab = () => {
+const ProfileTab = ({ user, isOwnProfile = true }) => {
   const { authUser } = useAuthStore();
+  const displayUser = user || authUser;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [profileBg, setProfileBg] = useState(
-    authUser?.profileBackground ||
-      "linear-gradient(to right, rgb(6, 182, 212, 0.1), rgb(20, 77, 251, 0.1))"
+    displayUser?.profileBackground ||
+      "linear-gradient(to right, rgb(6, 182, 212, 0.1), rgb(20, 77, 251, 0.1))",
   );
 
   useEffect(() => {
-    if (authUser?.profileBackground) {
-      setProfileBg(`url(${authUser.profileBackground})`);
+    if (displayUser?.profileBackground) {
+      setProfileBg(`url(${displayUser.profileBackground})`);
+    } else {
+      setProfileBg(
+        "linear-gradient(to right, rgb(6, 182, 212, 0.1), rgb(20, 77, 251, 0.1))",
+      );
     }
-  }, [authUser?.profileBackground]);
+  }, [displayUser?.profileBackground]);
 
   return (
     <>
@@ -29,30 +34,32 @@ const ProfileTab = () => {
         }}
       >
         {/*User Pic and name*/}
-        <UserIdTab />
+        <UserIdTab user={displayUser} />
         {/*Followers -Following - Desktop only */}
         <div className="hidden sm:flex absolute bottom-4 right-4 gap-6 bg-black/60 px-4 py-3 rounded-xl backdrop-blur-sm">
           <div className="text-center">
             <p className="font-bold text-white text-lg">
-              {authUser?.followers?.length || 0}
+              {displayUser?.followers?.length || 0}
             </p>
             <p className="text-gray-300 text-xs">Followers</p>
           </div>
           <div className="text-center">
             <p className="font-bold text-white text-lg">
-              {authUser?.following?.length || 0}
+              {displayUser?.following?.length || 0}
             </p>
             <p className="text-gray-300 text-xs">Following</p>
           </div>
         </div>
-        {/*Edit*/}
-        <button
-          onClick={() => setIsEditModalOpen(true)}
-          className="absolute top-4 right-4 bg-gradient-to-r from-[#1BF0FF] to-[#144DFB] text-black px-3 py-2 sm:px-4 sm:py-2 rounded-full font-semibold hover:opacity-90 transition flex items-center gap-2"
-        >
-          <MdEdit className="h-4 w-4" />
-          <span className="hidden sm:inline">Edit Profile</span>
-        </button>
+        {/*Edit - Only show for own profile*/}
+        {isOwnProfile && (
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="absolute top-4 right-4 bg-gradient-to-r from-[#1BF0FF] to-[#144DFB] text-black px-3 py-2 sm:px-4 sm:py-2 rounded-full font-semibold hover:opacity-90 transition flex items-center gap-2"
+          >
+            <MdEdit className="h-4 w-4" />
+            <span className="hidden sm:inline">Edit Profile</span>
+          </button>
+        )}
       </div>
 
       <EditProfileModal

@@ -1,74 +1,48 @@
 import { useState, useEffect } from "react";
 import { FaBookmark } from "react-icons/fa";
+import { useBookmarkStore } from "../../store/useBookmarkStore";
+import Post from "../../Components/Post/Post";
 
 export default function BookmarkPage() {
-  const [bookmarks, setBookmarks] = useState([]);
+  const { bookmarks, isLoadingBookmarks, getBookmarks } = useBookmarkStore();
 
   useEffect(() => {
-    // Fetch bookmarks from localStorage or API
-    const savedBookmarks = localStorage.getItem("bookmarks");
-    if (savedBookmarks) {
-      setBookmarks(JSON.parse(savedBookmarks));
-    }
+    getBookmarks();
   }, []);
 
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="sticky top-16 z-10 bg-[#1e1e1e] border-b border-gray-700 p-4 backdrop-blur-sm">
-        <div className="flex items-center gap-4">
-          <FaBookmark className="text-cyan-400 text-2xl" />
+      <div className="sticky top-0 z-50 bg-[#1e1e1e] border-b border-gray-700 px-4 py-3 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <FaBookmark className="text-cyan-400 text-lg" />
           <div>
-            <h2 className="text-white font-bold text-xl">Bookmarks</h2>
-            <p className="text-gray-500 text-sm">Save posts for later</p>
+            <h2 className="text-white font-bold text-base">Bookmarks</h2>
+            <p className="text-gray-600 text-xs">
+              {bookmarks.length} post{bookmarks.length !== 1 ? "s" : ""} saved
+            </p>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        {bookmarks && bookmarks.length > 0 ? (
-          <div className="space-y-4">
+      <div>
+        {isLoadingBookmarks ? (
+          <div className="text-center py-10">
+            <p className="text-gray-400">Loading bookmarks...</p>
+          </div>
+        ) : bookmarks && bookmarks.length > 0 ? (
+          <div className="space-y-0">
             {bookmarks.map((bookmark) => (
-              <div
-                key={bookmark.id}
-                className="bg-[#1e1e1e] border-b border-gray-700 p-4 rounded-lg hover:bg-[#262626] transition"
-              >
-                <div className="flex items-start gap-3">
-                  <img
-                    src={bookmark.userImage}
-                    alt="user"
-                    className="h-10 w-10 rounded-full"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold text-white text-sm">
-                        {bookmark.userName}
-                      </p>
-                      <p className="text-gray-500 text-sm">
-                        @{bookmark.userHandle}
-                      </p>
-                    </div>
-                    <p className="text-white text-sm mt-2">
-                      {bookmark.content}
-                    </p>
-                    <p className="text-gray-500 text-xs mt-2">
-                      {bookmark.date}
-                    </p>
-                  </div>
-                  <button className="text-cyan-400 hover:text-cyan-300 transition">
-                    <FaBookmark className="text-lg" />
-                  </button>
-                </div>
-              </div>
+              <Post key={bookmark._id} post={bookmark.post} />
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-20">
-            <FaBookmark className="text-gray-600 text-6xl mb-4" />
+          <div className="text-center py-20">
+            <FaBookmark className="h-16 w-16 text-gray-600 mx-auto mb-4 opacity-50" />
             <p className="text-gray-400 text-lg">No bookmarks yet</p>
             <p className="text-gray-500 text-sm mt-2">
-              Save posts to view them later
+              Click the bookmark icon on posts to save them
             </p>
           </div>
         )}

@@ -22,10 +22,29 @@ const postSchema = new mongoose.Schema(
       type: String,
     },
 
+    // Optional PDF document
+    pdf: {
+      type: String,
+    },
+
+    // PDF file name
+    pdfName: {
+      type: String,
+    },
+
     // Optional video
     video: {
       type: String,
     },
+
+    // Hashtags
+    hashtags: [
+      {
+        type: String,
+        trim: true,
+        lowercase: true,
+      },
+    ],
 
     // Post category
     category: {
@@ -64,6 +83,32 @@ const postSchema = new mongoose.Schema(
         },
       },
     ],
+
+    // Reposts - users who reposted this
+    reposts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    // If this is a repost, reference the original post
+    originalPost: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
+    },
+
+    // User who reposted (if this is a repost)
+    repostedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    // Is this a repost?
+    isRepost: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

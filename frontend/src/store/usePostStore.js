@@ -41,6 +41,7 @@ export const usePostStore = create((set, get) => ({
     set({ isCreatingPost: true });
     try {
       const res = await axiosInstance.post("/posts", postData);
+      console.log("✅ POST RESPONSE FROM BACKEND:", res.data.post);
       set((state) => ({
         posts: [res.data.post, ...state.posts],
         userPosts: [res.data.post, ...state.userPosts],
@@ -129,6 +130,25 @@ export const usePostStore = create((set, get) => ({
     } catch (error) {
       console.log("Error deleting comment:", error);
       toast.error("Failed to delete comment");
+    }
+  },
+
+  // Repost/Unrepost a post
+  repostPost: async (postId) => {
+    try {
+      const res = await axiosInstance.post(`/posts/${postId}/repost`);
+      // Refresh posts to include new repost or remove it
+      const { getAllPosts } = get();
+      await getAllPosts();
+      if (res.data.isReposted) {
+        toast.success("Reposted!");
+      } else {
+        toast.success("Repost removed");
+      }
+      return res.data;
+    } catch (error) {
+      console.log("Error reposting:", error);
+      toast.error("Failed to repost");
     }
   },
 }));

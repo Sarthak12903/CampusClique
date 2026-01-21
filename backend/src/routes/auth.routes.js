@@ -8,6 +8,10 @@ import {
   followUser,
   unfollowUser,
   getUserProfile,
+  getAllUsers,
+  searchUsers,
+  changePassword,
+  deleteAccount,
 } from "../controllers/auth.controllers.js";
 import { protectRoute } from "../middlewares/auth.middlewares.js";
 const router = express.Router();
@@ -17,8 +21,12 @@ router.post("/login", login);
 router.get("/check", protectRoute, checkAuth);
 router.post("/logout", logout);
 router.put("/update-profile", protectRoute, updateProfile);
+router.put("/change-password", protectRoute, changePassword);
+router.delete("/delete-account", protectRoute, deleteAccount);
 router.post("/follow/:userId", protectRoute, followUser);
 router.post("/unfollow/:userId", protectRoute, unfollowUser);
+router.get("/search", searchUsers);
 router.get("/profile/:userId", getUserProfile);
+router.get("/users", getAllUsers);
 
 export default router;

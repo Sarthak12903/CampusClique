@@ -163,13 +163,12 @@ export const updateProfile = async (req, res) => {
     if (linkedinUrl !== undefined) updateData.linkedinUrl = linkedinUrl;
     if (githubUrl !== undefined) updateData.githubUrl = githubUrl;
     if (profilePhoto !== undefined) updateData.profilePhoto = profilePhoto;
-    if (profileBackground !== undefined) updateData.profileBackground = profileBackground;
+    if (profileBackground !== undefined)
+      updateData.profileBackground = profileBackground;
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      updateData,
-      { new: true },
-    ).select("-password");
+    const user = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+    }).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -211,9 +210,10 @@ export const followUser = async (req, res) => {
     await currentUser.save();
     await userToFollow.save();
 
+    const updatedUser = await User.findById(followerId).select("-password");
     res.status(200).json({
       message: "Followed successfully",
-      user: currentUser.select("-password"),
+      user: updatedUser,
     });
   } catch (error) {
     console.error("Follow user error:", error);
@@ -250,9 +250,10 @@ export const unfollowUser = async (req, res) => {
     await currentUser.save();
     await userToUnfollow.save();
 
+    const updatedUser = await User.findById(followerId).select("-password");
     res.status(200).json({
       message: "Unfollowed successfully",
-      user: currentUser.select("-password"),
+      user: updatedUser,
     });
   } catch (error) {
     console.error("Unfollow user error:", error);
@@ -277,5 +278,138 @@ export const getUserProfile = async (req, res) => {
   } catch (error) {
     console.error("Get user profile error:", error);
     res.status(500).json({ message: "Server error fetching profile" });
+  }
+};
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}).select("-password").limit(50);
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Get all users error:", error);
+    res.status(500).json({ message: "Server error fetching users" });
+  }
+};
+
+// Search users by name or college
+export const searchUsers = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim().length === 0) {
+      return res.status(200).json([]);
+    }
+
+    const users = await User.find({
+      $or: [
+        { fullname: { $regex: q, $options: "i" } },
+        { collegeName: { $regex: q, $options: "i" } },
+        { email: { $regex: q, $options: "i" } },
+      ],
+    })
+      .select("-password")
+      .limit(10);
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Search users error:", error);
+    res.status(500).json({ message: "Server error searching users" });
+  }
+};
+
+// Change password
+export const changePassword = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "New password must be at least 6 characters" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordMatch = await bcrypt.compare(
+      currentPassword,
+      user.password,
+    );
+    if (!isPasswordMatch) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.error("Change password error:", error);
+    res.status(500).json({ message: "Server error changing password" });
+  }
+};
+
+// Delete account
+export const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    // Import models needed for cleanup
+    const Post = (await import("../models/post.models.js")).default;
+    const Bookmark = (await import("../models/bookmark.models.js")).default;
+    const Message = (await import("../models/message.models.js")).default;
+    const Conversation = (await import("../models/conversation.models.js"))
+      .default;
+
+    // Delete user's posts
+    await Post.deleteMany({ user: userId });
+
+    // Delete user's bookmarks
+    await Bookmark.deleteMany({ user: userId });
+
+    // Delete user's messages
+    await Message.deleteMany({ sender: userId });
+
+    // Delete conversations where user is a participant
+    await Conversation.deleteMany({ participants: userId });
+
+    // Remove user from followers/following lists of other users
+    await User.updateMany(
+      { followers: userId },
+      { $pull: { followers: userId } },
+    );
+    await User.updateMany(
+      { following: userId },
+      { $pull: { following: userId } },
+    );
+
+    // Remove user's comments from posts
+    await Post.updateMany(
+      { "comments.user": userId },
+      { $pull: { comments: { user: userId } } },
+    );
+
+    // Remove user's likes from posts
+    await Post.updateMany({ likes: userId }, { $pull: { likes: userId } });
+
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+
+    // Clear auth cookie
+    res.clearCookie("token");
+
+    res.status(200).json({ message: "Account deleted successfully" });
+  } catch (error) {
+    console.error("Delete account error:", error);
+    res.status(500).json({ message: "Server error deleting account" });
   }
 };

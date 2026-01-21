@@ -1,11 +1,87 @@
 import Post from "../models/post.models.js";
 import User from "../models/user.models.js";
 
+// Get trending hashtags
+export const getTrendingHashtags = async (req, res) => {
+  try {
+    const hashtags = await Post.aggregate([
+      { $unwind: "$hashtags" },
+      { $group: { _id: "$hashtags", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+      { $project: { tag: "$_id", posts: "$count", _id: 0 } },
+    ]);
+
+    res.status(200).json(hashtags);
+  } catch (error) {
+    console.error("Get trending hashtags error:", error);
+    res
+      .status(500)
+      .json({ message: "Server error while fetching trending hashtags" });
+  }
+};
+
+// Get posts by hashtag
+export const getPostsByHashtag = async (req, res) => {
+  try {
+    const { hashtag } = req.params;
+
+    const posts = await Post.find({ hashtags: hashtag.toLowerCase() })
+      .populate("user", "-password")
+      .populate("comments.user", "-password")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Get posts by hashtag error:", error);
+    res
+      .status(500)
+      .json({ message: "Server error while fetching posts by hashtag" });
+  }
+};
+
+// Search posts by description
+export const searchPosts = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim().length === 0) {
+      return res.status(200).json([]);
+    }
+
+    const posts = await Post.find({
+      $or: [
+        { description: { $regex: q, $options: "i" } },
+        { hashtags: { $regex: q, $options: "i" } },
+      ],
+    })
+      .populate("user", "-password")
+      .populate("comments.user", "-password")
+      .sort({ createdAt: -1 })
+      .limit(20);
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Search posts error:", error);
+    res.status(500).json({ message: "Server error while searching posts" });
+  }
+};
+
 // Create a new post
 export const createPost = async (req, res) => {
   try {
-    const { description, image, video, category } = req.body;
+    const { description, image, video, category, pdf, pdfName, hashtags } =
+      req.body;
     const userId = req.userId;
+
+    console.log("📥 POST DATA RECEIVED:", {
+      description,
+      image,
+      pdf,
+      pdfName,
+      category,
+      hashtags,
+    });
 
     if (!description || description.trim().length === 0) {
       return res.status(400).json({ message: "Post description is required" });
@@ -16,11 +92,18 @@ export const createPost = async (req, res) => {
       description,
       image,
       video,
+      pdf,
+      pdfName,
       category: category || "general",
+      hashtags: hashtags || [],
     });
+
+    console.log("✅ POST CREATED:", { pdf: post.pdf, pdfName: post.pdfName });
 
     // Populate user details
     await post.populate("user", "-password");
+
+    console.log("📋 COMPLETE POST OBJECT:", JSON.stringify(post, null, 2));
 
     res.status(201).json({
       message: "Post created successfully",
@@ -38,6 +121,7 @@ export const getAllPosts = async (req, res) => {
     const posts = await Post.find()
       .populate("user", "-password")
       .populate("comments.user", "-password")
+      .populate("repostedBy", "fullname profilePhoto")
       .sort({ createdAt: -1 });
 
     res.status(200).json(posts);
@@ -61,6 +145,87 @@ export const getUserPosts = async (req, res) => {
   } catch (error) {
     console.error("Get user posts error:", error);
     res.status(500).json({ message: "Server error while fetching user posts" });
+  }
+};
+
+// Get posts by specific user ID
+export const getPostsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const posts = await Post.find({ user: userId })
+      .populate("user", "-password")
+      .populate("comments.user", "-password")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Get posts by user ID error:", error);
+    res.status(500).json({ message: "Server error while fetching user posts" });
+  }
+};
+
+// Get posts liked by the logged-in user
+export const getLikedPosts = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const posts = await Post.find({ likes: userId })
+      .populate("user", "-password")
+      .populate("comments.user", "-password")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Get liked posts error:", error);
+    res
+      .status(500)
+      .json({ message: "Server error while fetching liked posts" });
+  }
+};
+
+// Get posts liked by a specific user ID
+export const getLikedPostsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const posts = await Post.find({ likes: userId })
+      .populate("user", "-password")
+      .populate("comments.user", "-password")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Get liked posts by user ID error:", error);
+    res
+      .status(500)
+      .json({ message: "Server error while fetching liked posts" });
+  }
+};
+
+// Get posts with media (images/pdfs) by a specific user ID
+export const getMediaPostsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const posts = await Post.find({
+      user: userId,
+      $or: [
+        { image: { $exists: true, $ne: null, $ne: "" } },
+        { pdf: { $exists: true, $ne: null, $ne: "" } },
+        { video: { $exists: true, $ne: null, $ne: "" } },
+      ],
+    })
+      .populate("user", "-password")
+      .populate("comments.user", "-password")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Get media posts by user ID error:", error);
+    res
+      .status(500)
+      .json({ message: "Server error while fetching media posts" });
   }
 };
 
@@ -88,7 +253,8 @@ export const getPost = async (req, res) => {
 export const updatePost = async (req, res) => {
   try {
     const { postId } = req.params;
-    const { description, image, video, category } = req.body;
+    const { description, image, video, category, pdf, pdfName, hashtags } =
+      req.body;
     const userId = req.userId;
 
     const post = await Post.findById(postId);
@@ -106,7 +272,10 @@ export const updatePost = async (req, res) => {
     if (description) post.description = description;
     if (image) post.image = image;
     if (video) post.video = video;
+    if (pdf) post.pdf = pdf;
+    if (pdfName) post.pdfName = pdfName;
     if (category) post.category = category;
+    if (hashtags) post.hashtags = hashtags;
 
     await post.save();
     await post.populate("user", "-password");
@@ -256,5 +425,73 @@ export const deleteComment = async (req, res) => {
   } catch (error) {
     console.error("Delete comment error:", error);
     res.status(500).json({ message: "Server error while deleting comment" });
+  }
+};
+
+// Repost a post
+export const repostPost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.userId;
+
+    const originalPost = await Post.findById(postId);
+
+    if (!originalPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Check if user already reposted this post
+    if (originalPost.reposts.includes(userId)) {
+      // Undo repost - remove from reposts array and delete the repost
+      originalPost.reposts = originalPost.reposts.filter(
+        (id) => id.toString() !== userId.toString(),
+      );
+      await originalPost.save();
+
+      // Delete the repost
+      await Post.findOneAndDelete({
+        originalPost: postId,
+        repostedBy: userId,
+        isRepost: true,
+      });
+
+      return res.status(200).json({
+        message: "Repost removed",
+        isReposted: false,
+        repostCount: originalPost.reposts.length,
+      });
+    }
+
+    // Add user to reposts array on original post
+    originalPost.reposts.push(userId);
+    await originalPost.save();
+
+    // Create a new repost entry
+    const repost = await Post.create({
+      user: originalPost.user,
+      description: originalPost.description,
+      image: originalPost.image,
+      pdf: originalPost.pdf,
+      pdfName: originalPost.pdfName,
+      video: originalPost.video,
+      hashtags: originalPost.hashtags,
+      category: originalPost.category,
+      originalPost: postId,
+      repostedBy: userId,
+      isRepost: true,
+    });
+
+    await repost.populate("user", "-password");
+    await repost.populate("repostedBy", "-password");
+
+    res.status(201).json({
+      message: "Post reposted successfully",
+      isReposted: true,
+      repostCount: originalPost.reposts.length,
+      repost,
+    });
+  } catch (error) {
+    console.error("Repost error:", error);
+    res.status(500).json({ message: "Server error while reposting" });
   }
 };

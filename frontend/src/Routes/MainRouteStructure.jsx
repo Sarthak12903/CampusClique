@@ -12,6 +12,7 @@ export default function MainRouteStructure() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/profile/:userId" element={<ProfilePage />} />
       <Route path="/messages" element={<MessagesPage />} />
       <Route path="/bookmarks" element={<BookmarkPage />} />
       <Route path="/explore" element={<ExplorePage />} />

@@ -10,6 +10,14 @@ export default defineConfig({
         target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
+        credentials: true,
+        headers: {
+          "Origin": "http://localhost:5173",
+          "Access-Control-Allow-Credentials": "true"
+        },
+        onProxyRes: (proxyRes, req, res) => {
+          proxyRes.headers['Access-Control-Allow-Credentials'] = 'true';
+        }
       },
     },
   },

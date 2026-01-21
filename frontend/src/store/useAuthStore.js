@@ -24,20 +24,23 @@ export const useAuthStore = create((set, get) => ({
   register: async (data) => {
     set({ isRegistering: true });
     try {
+      console.log("Attempting register with:", data);
       const res = await axiosInstance.post("/auth/register", data);
+      console.log("Register response:", res);
       if (res) {
         toast.success("Registered successfully!!");
-        set({ authUser: res.data });
-        // Verify the session is properly established
-        await get().checkAuth();
+        set({ authUser: res.data, isInitializing: false });
+        console.log("Auth user set to:", res.data);
         // Clear browser history to prevent back button going to auth pages
         window.history.replaceState(null, "", "/");
       }
     } catch (error) {
+      console.error("Register error:", error);
       toast.error(error.response?.data?.message);
       console.log(
         `Error authStore Registration : ${error.response?.data?.message || "Registration Failed"}`,
       );
+      set({ authUser: null, isInitializing: false });
     } finally {
       set({ isRegistering: false });
     }
@@ -46,20 +49,23 @@ export const useAuthStore = create((set, get) => ({
   login: async (data) => {
     set({ isLoggingIn: true });
     try {
+      console.log("Attempting login with:", data);
       const res = await axiosInstance.post("/auth/login", data);
+      console.log("Login response:", res);
       if (res) {
         toast.success("Login successful!!");
-        set({ authUser: res.data });
-        // Verify the session is properly established
-        await get().checkAuth();
+        set({ authUser: res.data, isInitializing: false });
+        console.log("Auth user set to:", res.data);
         // Clear browser history to prevent back button going to auth pages
         window.history.replaceState(null, "", "/");
       }
     } catch (error) {
+      console.error("Login error:", error);
       toast.error(error.response?.data?.message);
       console.log(
         `Error authStore Login : ${error.response?.data?.message || "Login Failed"}`,
       );
+      set({ authUser: null, isInitializing: false });
     } finally {
       set({ isLoggingIn: false });
     }
