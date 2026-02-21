@@ -2,11 +2,52 @@ import bcrypt from "bcryptjs";
 import User from "../models/user.models.js";
 
 import { generateToken } from "../lib/utils.js";
+import { SYSTEM_ADMIN } from "../lib/systemAdmin.constants.js";
+
+const formatUserPayload = (user, token) => ({
+  _id: user._id,
+  fullname: user.fullname,
+  collegeName: user.collegeName,
+  email: user.email,
+  role: user.role,
+  approvalStatus: user.approvalStatus,
+  expertise: user.expertise,
+  yearsOfExperience: user.yearsOfExperience,
+  collegeCode: user.collegeCode,
+  bio: user.bio,
+  profilePhoto: user.profilePhoto,
+  profileBackground: user.profileBackground,
+  location: user.location,
+  linkedinUrl: user.linkedinUrl,
+  githubUrl: user.githubUrl,
+  followers: user.followers || [],
+  following: user.following || [],
+  createdAt: user.createdAt,
+  token,
+});
+
 export const register = async (req, res) => {
   try {
-    const { fullname, collegeName, email, password, rePassword } = req.body;
+    const {
+      role,
+      fullname,
+      collegeName,
+      email,
+      password,
+      rePassword,
+      expertise,
+      yearsOfExperience,
+      linkedinUrl,
+      bio,
+      collegeCode,
+    } = req.body;
+    const normalizedEmail = email?.toLowerCase().trim();
 
-    if (!fullname || !collegeName || !email || !password || !rePassword) {
+    if (!role || !["student", "mentor", "admin"].includes(role)) {
+      return res.status(400).json({ message: "Valid role is required" });
+    }
+
+    if (!email || !password || !rePassword) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -20,19 +61,64 @@ export const register = async (req, res) => {
         .json({ message: "Password must be at least 6 characters" });
     }
 
-    const existingUser = await User.findOne({ email });
+    if (role === "student") {
+      if (!fullname || !collegeName) {
+        return res
+          .status(400)
+          .json({ message: "Full name and college name are required" });
+      }
+    }
+
+    if (role === "mentor") {
+      if (
+        !fullname ||
+        !expertise ||
+        yearsOfExperience === undefined ||
+        !linkedinUrl
+      ) {
+        return res.status(400).json({
+          message:
+            "Mentor requires full name, expertise, experience, and LinkedIn profile",
+        });
+      }
+    }
+
+    if (role === "admin") {
+      if (!collegeName || !collegeCode) {
+        return res.status(400).json({
+          message: "College name and college code are required for admin",
+        });
+      }
+    }
+
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(409).json({ message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
-      fullname,
+    const isSystemAdmin = normalizedEmail === SYSTEM_ADMIN.email;
+
+    const userPayload = {
+      fullname:
+        role === "admin" ? `${collegeName} Admin` : (fullname || "").trim(),
       collegeName,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
-    });
+      role: isSystemAdmin ? "system_admin" : role,
+      approvalStatus: "approved",
+      bio,
+      linkedinUrl,
+      expertise,
+      yearsOfExperience:
+        yearsOfExperience !== undefined && yearsOfExperience !== ""
+          ? Number(yearsOfExperience)
+          : undefined,
+      collegeCode,
+    };
+
+    const user = await User.create(userPayload);
 
     const token = generateToken(user._id);
 
@@ -43,22 +129,7 @@ export const register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(201).json({
-      _id: user._id,
-      fullname: user.fullname,
-      collegeName: user.collegeName,
-      email: user.email,
-      bio: user.bio,
-      profilePhoto: user.profilePhoto,
-      profileBackground: user.profileBackground,
-      location: user.location,
-      linkedinUrl: user.linkedinUrl,
-      githubUrl: user.githubUrl,
-      followers: user.followers || [],
-      following: user.following || [],
-      createdAt: user.createdAt,
-      token,
-    });
+    res.status(201).json(formatUserPayload(user, token));
   } catch (error) {
     console.error("Register error:", error);
     res.status(500).json({ message: "Server error during registration" });
@@ -71,6 +142,13 @@ export const checkAuth = async (req, res) => {
 
     if (!user) {
       return res.status(401).json({ message: "User not found" });
+    }
+
+    if (user.approvalStatus !== "approved" && user.role !== "system_admin") {
+      return res.status(403).json({
+        message: "Your account is not approved yet.",
+        approvalStatus: user.approvalStatus,
+      });
     }
 
     res.status(200).json(user);
@@ -90,10 +168,25 @@ export const login = async (req, res) => {
         .json({ message: "Email and password are required" });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    if (user.approvalStatus !== "approved" && user.role !== "system_admin") {
+      if (user.approvalStatus === "rejected") {
+        return res.status(403).json({
+          message:
+            "Your registration request was rejected. Contact system admin for support.",
+          approvalStatus: "rejected",
+        });
+      }
+
+      return res.status(403).json({
+        message: "Your account is pending admin approval.",
+        approvalStatus: user.approvalStatus || "pending",
+      });
     }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
@@ -111,22 +204,7 @@ export const login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(200).json({
-      _id: user._id,
-      fullname: user.fullname,
-      collegeName: user.collegeName,
-      email: user.email,
-      bio: user.bio,
-      profilePhoto: user.profilePhoto,
-      profileBackground: user.profileBackground,
-      location: user.location,
-      linkedinUrl: user.linkedinUrl,
-      githubUrl: user.githubUrl,
-      followers: user.followers || [],
-      following: user.following || [],
-      createdAt: user.createdAt,
-      token,
-    });
+    res.status(200).json(formatUserPayload(user, token));
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Server error during login" });
@@ -289,6 +367,81 @@ export const getAllUsers = async (req, res) => {
   } catch (error) {
     console.error("Get all users error:", error);
     res.status(500).json({ message: "Server error fetching users" });
+  }
+};
+
+export const getPendingUsers = async (req, res) => {
+  try {
+    const users = await User.find({ approvalStatus: "pending" })
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Get pending users error:", error);
+    res.status(500).json({ message: "Server error fetching pending users" });
+  }
+};
+
+export const approveUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { role } = req.body;
+
+    if (!["student", "mentor", "admin"].includes(role)) {
+      return res
+        .status(400)
+        .json({ message: "Role must be student, mentor, or admin" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role === "system_admin") {
+      return res
+        .status(400)
+        .json({ message: "System admin cannot be changed" });
+    }
+
+    user.role = role;
+    user.approvalStatus = "approved";
+    await user.save();
+
+    res.status(200).json({
+      message: `User approved as ${role}`,
+      user: { ...user.toObject(), password: undefined },
+    });
+  } catch (error) {
+    console.error("Approve user error:", error);
+    res.status(500).json({ message: "Server error approving user" });
+  }
+};
+
+export const rejectUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role === "system_admin") {
+      return res
+        .status(400)
+        .json({ message: "System admin cannot be changed" });
+    }
+
+    user.role = null;
+    user.approvalStatus = "rejected";
+    await user.save();
+
+    res.status(200).json({ message: "User request rejected" });
+  } catch (error) {
+    console.error("Reject user error:", error);
+    res.status(500).json({ message: "Server error rejecting user" });
   }
 };
 

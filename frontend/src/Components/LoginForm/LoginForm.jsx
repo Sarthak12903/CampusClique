@@ -4,11 +4,14 @@ import SignUpWithGoogle from "../SignUpWithGoogle/SignUpWithGoogle";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { getDashboardPathByRole } from "../../lib/roleUtils";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoggingIn } = useAuthStore();
+  const navigate = useNavigate();
 
   const validateForm = () => {
     if (!email.trim()) {
@@ -34,12 +37,15 @@ const LoginForm = () => {
     return true;
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const result = validateForm();
 
     if (result) {
-      login({ email, password });
+      const user = await login({ email, password });
+      if (user?.role) {
+        navigate(getDashboardPathByRole(user.role), { replace: true });
+      }
     }
   };
 

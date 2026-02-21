@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import SearchBar from "../SearchBar/SearchBar";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
+import RoleBadge from "../RoleBadge/RoleBadge";
 
 export default function NavBar({ onMenuClick }) {
   const { authUser, logout } = useAuthStore();
@@ -59,6 +60,7 @@ export default function NavBar({ onMenuClick }) {
         <p className="text-white font-semibold text-sm hidden lg:block truncate">
           {authUser?.fullname || "User"}
         </p>
+        {authUser?.role && <RoleBadge role={authUser.role} />}
 
         {/* Dropdown Menu */}
         {showDropdown && (

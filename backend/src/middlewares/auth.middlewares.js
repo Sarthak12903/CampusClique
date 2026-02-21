@@ -31,3 +31,11 @@ export const protectRoute = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const requireSystemAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== "system_admin") {
+    return res.status(403).json({ message: "System admin access required" });
+  }
+
+  next();
+};

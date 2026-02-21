@@ -4,10 +4,12 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 export const useAuthStore = create((set, get) => ({
   authUser: null,
+  pendingUsers: [],
   isRegistering: false,
   isLoggingIn: false,
   isInitializing: true,
   isUpdatingProfile: false,
+  isLoadingPendingUsers: false,
 
   checkAuth: async () => {
     try {
@@ -27,13 +29,13 @@ export const useAuthStore = create((set, get) => ({
       console.log("Attempting register with:", data);
       const res = await axiosInstance.post("/auth/register", data);
       console.log("Register response:", res);
-      if (res) {
+      if (res?.data?._id) {
         toast.success("Registered successfully!!");
         set({ authUser: res.data, isInitializing: false });
         console.log("Auth user set to:", res.data);
-        // Clear browser history to prevent back button going to auth pages
-        window.history.replaceState(null, "", "/");
+        return res.data;
       }
+      return null;
     } catch (error) {
       console.error("Register error:", error);
       toast.error(error.response?.data?.message);
@@ -41,6 +43,7 @@ export const useAuthStore = create((set, get) => ({
         `Error authStore Registration : ${error.response?.data?.message || "Registration Failed"}`,
       );
       set({ authUser: null, isInitializing: false });
+      return null;
     } finally {
       set({ isRegistering: false });
     }
@@ -56,9 +59,9 @@ export const useAuthStore = create((set, get) => ({
         toast.success("Login successful!!");
         set({ authUser: res.data, isInitializing: false });
         console.log("Auth user set to:", res.data);
-        // Clear browser history to prevent back button going to auth pages
-        window.history.replaceState(null, "", "/");
+        return res.data;
       }
+      return null;
     } catch (error) {
       console.error("Login error:", error);
       toast.error(error.response?.data?.message);
@@ -66,8 +69,54 @@ export const useAuthStore = create((set, get) => ({
         `Error authStore Login : ${error.response?.data?.message || "Login Failed"}`,
       );
       set({ authUser: null, isInitializing: false });
+      return null;
     } finally {
       set({ isLoggingIn: false });
+    }
+  },
+
+  fetchPendingUsers: async () => {
+    set({ isLoadingPendingUsers: true });
+    try {
+      const res = await axiosInstance.get("/auth/admin/pending-users");
+      set({ pendingUsers: res.data || [] });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch requests");
+      console.log(
+        `Error fetching pending users : ${error.response?.data?.message || "Fetch Failed"}`,
+      );
+    } finally {
+      set({ isLoadingPendingUsers: false });
+    }
+  },
+
+  approveUser: async (userId, role) => {
+    try {
+      await axiosInstance.patch(`/auth/admin/approve/${userId}`, { role });
+      toast.success(`User approved as ${role}`);
+      set((state) => ({
+        pendingUsers: state.pendingUsers.filter((user) => user._id !== userId),
+      }));
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to approve user");
+      console.log(
+        `Error approving user : ${error.response?.data?.message || "Approve Failed"}`,
+      );
+    }
+  },
+
+  rejectUser: async (userId) => {
+    try {
+      await axiosInstance.patch(`/auth/admin/reject/${userId}`);
+      toast.success("User request rejected");
+      set((state) => ({
+        pendingUsers: state.pendingUsers.filter((user) => user._id !== userId),
+      }));
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to reject user");
+      console.log(
+        `Error rejecting user : ${error.response?.data?.message || "Reject Failed"}`,
+      );
     }
   },
 

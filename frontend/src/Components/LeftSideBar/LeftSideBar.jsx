@@ -22,6 +22,7 @@ const sidebarItems = [
   { id: 4, name: "Bookmarks", iconImg: bookmark, path: "/bookmarks" },
   { id: 5, name: "Messages", iconImg: messages, path: "/messages" },
   { id: 6, name: "Settings", iconImg: settings, path: "/settings" },
+  { id: 7, name: "Admin", iconImg: settings, path: "/admin" },
 ];
 
 export default function LeftSideBar({ isOpen, onClose }) {
@@ -40,6 +41,11 @@ export default function LeftSideBar({ isOpen, onClose }) {
   const pdfInputRef = useRef(null);
   const { createPost, isCreatingPost } = usePostStore();
   const { authUser } = useAuthStore();
+  const filteredSidebarItems = sidebarItems.filter(
+    (item) =>
+      item.name !== "Admin" ||
+      ["admin", "system_admin"].includes(authUser?.role),
+  );
 
   const handleNavigation = (path) => {
     if (path !== "#") {
@@ -205,7 +211,7 @@ export default function LeftSideBar({ isOpen, onClose }) {
           overflow-y-auto
         `}
       >
-        {sidebarItems.map((item) => (
+        {filteredSidebarItems.map((item) => (
           <div
             key={item.id}
             onClick={() => handleNavigation(item.path)}

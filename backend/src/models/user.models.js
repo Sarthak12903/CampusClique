@@ -25,6 +25,18 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
     },
 
+    role: {
+      type: String,
+      enum: ["student", "mentor", "admin", "system_admin"],
+      default: null,
+    },
+
+    approvalStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
+
     bio: {
       type: String,
       maxlength: 300,
@@ -51,6 +63,21 @@ const userSchema = new mongoose.Schema(
     },
 
     githubUrl: {
+      type: String,
+      trim: true,
+    },
+
+    expertise: {
+      type: String,
+      trim: true,
+    },
+
+    yearsOfExperience: {
+      type: Number,
+      min: 0,
+    },
+
+    collegeCode: {
       type: String,
       trim: true,
     },
