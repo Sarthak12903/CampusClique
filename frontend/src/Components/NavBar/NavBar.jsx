@@ -1,29 +1,105 @@
 import ProfilePic from "../../assets/GradientIcons/ProfilePic.png";
 import { IoSearchOutline } from "react-icons/io5";
 import { AiOutlineMenu } from "react-icons/ai";
+import { useState, useEffect, useRef } from "react";
 import SearchBar from "../SearchBar/SearchBar";
+import { useAuthStore } from "../../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
+import RoleBadge from "../RoleBadge/RoleBadge";
 
-export default function NavBar({onMenuClick}) {
+export default function NavBar({ onMenuClick }) {
+  const { authUser, logout } = useAuthStore();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDropdown]);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   return (
-    <div className="w-screen max-sm:p-5 sm:px-10 md:px-80 lg:px-60  h-[5rem] bg-[#1e1e1e] flex justify-between items-center">
-      <AiOutlineMenu   onClick={onMenuClick}
-        className="md:hidden text-white text-2xl cursor-pointer" />
-      <h1 className="font-bold max-sm:text-xl sm:text-2xl text-white">CampusClique</h1>
+    <div className="w-full h-16 bg-[#1e1e1e] border-b border-gray-700 flex justify-between items-center px-4 md:px-6 sticky top-0 z-40">
+      <AiOutlineMenu
+        onClick={onMenuClick}
+        className="md:hidden text-white text-2xl cursor-pointer"
+      />
+      <h1 className="font-bold text-2xl text-white">CampusClique</h1>
 
-      {/* SearchBAr */}
-     <SearchBar/>
+      {/* SearchBar */}
+      <SearchBar />
 
-     {/* Profile Tab */}
-      <div className="rounded-full hidden md:flex border-2 border-[#34D399] h-[2.5em] w-auto p-1 flex items-center justify-between ">
-        <p className="text-sm text-white truncate pl-1">John Smith Doe</p>
-        <img src={ProfilePic} alt="ProfilePic" className="rounded-full h-[2em] w-[25%]" />
+      {/* Profile Tab */}
+      <div
+        ref={dropdownRef}
+        className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full border-2 border-[#34D399] cursor-pointer hover:bg-gray-900 transition max-w-xs relative"
+        onClick={() => setShowDropdown(!showDropdown)}
+      >
+        <img
+          src={ProfilePic}
+          alt="ProfilePic"
+          className="rounded-full h-8 w-8 flex-shrink-0"
+        />
+        <p className="text-white font-semibold text-sm hidden lg:block truncate">
+          {authUser?.fullname || "User"}
+        </p>
+        {authUser?.role && <RoleBadge role={authUser.role} />}
+
+        {/* Dropdown Menu */}
+        {showDropdown && (
+          <div
+            className="absolute top-14 right-0 bg-[#1e1e1e] border-2 border-[#34D399] rounded-xl p-4 z-50 w-64 shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-white mb-4">
+              <p className="font-bold text-lg">{authUser?.fullname}</p>
+              <p className="text-xs text-gray-400">{authUser?.email}</p>
+              <p className="text-xs text-gray-400">{authUser?.collegeName}</p>
+            </div>
+            <hr className="border-gray-700 my-3" />
+            <button
+              onClick={() => {
+                navigate("/profile");
+                setShowDropdown(false);
+              }}
+              className="block w-full text-left px-3 py-2 text-white hover:bg-gray-800 rounded text-sm font-medium mb-2"
+            >
+              👤 View Profile
+            </button>
+            <button
+              onClick={handleLogout}
+              className="block w-full text-left px-3 py-2 text-red-500 hover:bg-gray-800 rounded text-sm font-medium"
+            >
+              🚪 Logout
+            </button>
+          </div>
+        )}
       </div>
-      {/* MobileTab  */}
-       <img src={ProfilePic} alt="ProfilePic" className="flex md:hidden rounded-full h-8 w-8  border-2 border-white-400 " />
-    </div>
-       
-       
-   
 
+      {/* Mobile Profile Icon */}
+      <img
+        src={ProfilePic}
+        alt="ProfilePic"
+        className="flex md:hidden rounded-full h-8 w-8 cursor-pointer"
+        onClick={() => setShowDropdown(!showDropdown)}
+      />
+    </div>
   );
 }

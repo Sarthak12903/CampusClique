@@ -1,7 +1,7 @@
 import React from 'react'
 import CommentForm from '../CommentForm/CommentForm'
 import { useState } from 'react';
-const Comments = () => { 
+const Comments = () => {
     const [comments, setComments] = useState([{
         username: "Alina Pathan",
         comment: "This is a sample comment to see the comment section styling."
@@ -11,7 +11,7 @@ const Comments = () => {
     let addNewComment = (comment) => {
         setComments([...comments, comment]);
         console.log("new comment added");
-        
+
     }
 
   return (

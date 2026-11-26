@@ -1,75 +1,113 @@
 import mongoose from "mongoose";
 
-
-const defaultProfilePic="https://imgs.search.brave.com/F09pGxti9Zp8AhLyRRrgNIfE6cmyTUR3aeyqv7kLJ6E/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzVhL2Jk/Lzk4LzVhYmQ5ODU3/MzVhOGZkNGFkY2Iw/ZTc5NWRlNmExMDA1/LmpwZw"
-const defaultProfileBg="https://imgs.search.brave.com/4qY1jBNmUMzCbs-u49MwDR_JDQGK7QxgqP63qxdsUCk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvcHJv/ZmlsZS1waWN0dXJl/LWJhY2tncm91bmQt/bDlsZXJ0aXB5MXlu/ZjU3di5qcGc"
-const profileSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      unique: true   // one profile per user
-    },
-
-    fullName: {
+    fullname: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
 
     collegeName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
+      minlength: 6,
+    },
+
+    role: {
+      type: String,
+      enum: ["student", "mentor", "admin", "system_admin"],
+      default: null,
+    },
+
+    approvalStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
     },
 
     bio: {
       type: String,
-      maxlength: 300
+      maxlength: 300,
     },
 
     location: {
       city: {
         type: String,
-        trim: true
+        trim: true,
       },
       state: {
         type: String,
-        trim: true
+        trim: true,
       },
       country: {
         type: String,
-        trim: true
-      }
+        trim: true,
+      },
     },
 
     linkedinUrl: {
       type: String,
-      trim: true
+      trim: true,
     },
 
     githubUrl: {
       type: String,
-      trim: true
+      trim: true,
+    },
+
+    expertise: {
+      type: String,
+      trim: true,
+    },
+
+    yearsOfExperience: {
+      type: Number,
+      min: 0,
+    },
+
+    collegeCode: {
+      type: String,
+      trim: true,
     },
 
     profilePhoto: {
-      type: String,   // store image URL or file path
-      set: (v) => !v ? defaultProfilePic : v
-
+      type: String, // store image URL or file path
     },
 
     profileBackground: {
-      type: String,   // store image URL or file path
-      set:(v)=>v==="" ? defaultProfileBg:v
-    }
+      type: String, // store image URL or file path
+    },
+
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
-const Profile = mongoose.model("Profile", profileSchema);
-export default Profile;
-
+const User = mongoose.model("User", userSchema);
+export default User;

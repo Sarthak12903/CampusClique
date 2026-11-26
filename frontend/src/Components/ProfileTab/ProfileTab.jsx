@@ -1,20 +1,73 @@
-import UserIdTab from '../UserIdTab/UserIdTab'
+import UserIdTab from "../UserIdTab/UserIdTab";
 import { MdEdit } from "react-icons/md";
-const ProfileTab = () => {
-    return (
-        <div className='relative w-full h-[220px] rounded-xl border-2 border-[#34D399] bg-red-200'>
-            {/*User Pic and name*/}
-            <UserIdTab />
-            {/*Followers -Following*/}
-                <div className='followersFollowingCard hidden sm:flex rounded-xl bg-white/40 absolute bottom-[0px] left-[50%] -translate-x-1/6 h-14 w-auto px-2 font-semibold text-black text-sm flex justify-center gap-2 items-center '>
-                <div className='flex flex-col justify-center items-center'><p>41</p><p>Following</p></div>
-                <div className='flex flex-col justify-center items-center'><p>41</p><p>Followers</p></div>    
-            </div>
-            {/*Edit*/}
-            <MdEdit className='absolute bottom-[7px] right-2 h-6 w-6 text-white'/>
+import { useAuthStore } from "../../store/useAuthStore";
+import { useState, useEffect } from "react";
+import EditProfileModal from "../EditProfileModal/EditProfileModal";
 
+const ProfileTab = ({ user, isOwnProfile = true }) => {
+  const { authUser } = useAuthStore();
+  const displayUser = user || authUser;
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [profileBg, setProfileBg] = useState(
+    displayUser?.profileBackground ||
+      "linear-gradient(to right, rgb(6, 182, 212, 0.1), rgb(20, 77, 251, 0.1))",
+  );
+
+  useEffect(() => {
+    if (displayUser?.profileBackground) {
+      setProfileBg(`url(${displayUser.profileBackground})`);
+    } else {
+      setProfileBg(
+        "linear-gradient(to right, rgb(6, 182, 212, 0.1), rgb(20, 77, 251, 0.1))",
+      );
+    }
+  }, [displayUser?.profileBackground]);
+
+  return (
+    <>
+      <div
+        className="relative w-full h-56 rounded-xl border-b border-gray-700 bg-cover bg-center"
+        style={{
+          backgroundImage:
+            profileBg ||
+            "linear-gradient(to right, rgb(6, 182, 212, 0.1), rgb(20, 77, 251, 0.1))",
+        }}
+      >
+        {/*User Pic and name*/}
+        <UserIdTab user={displayUser} />
+        {/*Followers -Following - Desktop only */}
+        <div className="hidden sm:flex absolute bottom-4 right-4 gap-6 bg-black/60 px-4 py-3 rounded-xl backdrop-blur-sm">
+          <div className="text-center">
+            <p className="font-bold text-white text-lg">
+              {displayUser?.followers?.length || 0}
+            </p>
+            <p className="text-gray-300 text-xs">Followers</p>
+          </div>
+          <div className="text-center">
+            <p className="font-bold text-white text-lg">
+              {displayUser?.following?.length || 0}
+            </p>
+            <p className="text-gray-300 text-xs">Following</p>
+          </div>
         </div>
-    )
-}
+        {/*Edit - Only show for own profile*/}
+        {isOwnProfile && (
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="absolute top-4 right-4 bg-gradient-to-r from-[#1BF0FF] to-[#144DFB] text-black px-3 py-2 sm:px-4 sm:py-2 rounded-full font-semibold hover:opacity-90 transition flex items-center gap-2"
+          >
+            <MdEdit className="h-4 w-4" />
+            <span className="hidden sm:inline">Edit Profile</span>
+          </button>
+        )}
+      </div>
 
-export default ProfileTab 
+      <EditProfileModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+      />
+    </>
+  );
+};
+
+export default ProfileTab;

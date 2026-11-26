@@ -1,38 +1,96 @@
-import React from 'react'
-import { MdOutlinePlace } from "react-icons/md";
-const ProfileDescription = () => {
-    return (
-        <div className='text-white'>
-            <p className='w-full h-auto p-2 text-sm md:text-md'>Lorem ipsum, dolor sit amet consectetur adipisicing elitrdrtegfdhtru Voluptatibus cupiditate excepturi</p>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-3 p-2 text-sm sm:text-md">
+import React from "react";
+import { MdOutlinePlace, MdLink } from "react-icons/md";
+import { FaLinkedinIn, FaGithub } from "react-icons/fa";
+import { useAuthStore } from "../../store/useAuthStore";
 
-                {/* Row 1 - Column 1 */}
-                <div className="flex items-center gap-2">
-                    <MdOutlinePlace />
-                    <p className='truncate'>Pune, Maharashtra, India</p>
-                </div>
+const ProfileDescription = ({ user }) => {
+  const { authUser } = useAuthStore();
+  const displayUser = user || authUser;
 
-                {/* Row 1 - Column 2 */}
-                <div className="flex items-center gap-2">
-                    <MdOutlinePlace />
-                    <p>22 March, 2024</p>
-                </div>
+  return (
+    <div className="text-white p-4">
+      {/* Bio */}
+      {displayUser?.bio && (
+        <p className="text-sm text-gray-200 mb-4 leading-relaxed">
+          {displayUser.bio}
+        </p>
+      )}
 
-                {/* Row 2 - Column 1 */}
-                <div className="flex items-center gap-2">
-                    <MdOutlinePlace />
-                    <p className='truncate'>linkedinlink</p>
-                </div>
+      {/* Details Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+        {/* Location */}
+        {(displayUser?.location?.city ||
+          displayUser?.location?.state ||
+          displayUser?.location?.country) && (
+          <div className="flex items-center gap-2 text-gray-300">
+            <MdOutlinePlace className="flex-shrink-0 w-4 h-4 text-cyan-400" />
+            <p className="truncate">
+              {displayUser?.location?.city || ""}
+              {displayUser?.location?.city && displayUser?.location?.state
+                ? ", "
+                : ""}
+              {displayUser?.location?.state || ""}
+              {(displayUser?.location?.city || displayUser?.location?.state) &&
+              displayUser?.location?.country
+                ? ", "
+                : ""}
+              {displayUser?.location?.country || ""}
+            </p>
+          </div>
+        )}
 
-                {/* Row 2 - Column 2 */}
-                <div className="flex items-center gap-2">
-                    <MdOutlinePlace />
-                    <p className='truncate'>github link</p>
-                </div>
-
-            </div>
+        {/* Date Joined */}
+        <div className="flex items-center gap-2 text-gray-300">
+          <MdLink className="flex-shrink-0 w-4 h-4 text-cyan-400" />
+          <p className="truncate">
+            Joined{" "}
+            {displayUser?.createdAt
+              ? new Date(displayUser.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                })
+              : "Recently"}
+          </p>
         </div>
-    )
-}
 
-export default ProfileDescription
+        {/* LinkedIn */}
+        {displayUser?.linkedinUrl && (
+          <a
+            href={displayUser.linkedinUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition truncate"
+          >
+            <FaLinkedinIn className="flex-shrink-0 w-4 h-4" />
+            <span className="truncate">LinkedIn</span>
+          </a>
+        )}
+
+        {/* GitHub */}
+        {displayUser?.githubUrl && (
+          <a
+            href={displayUser.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition truncate"
+          >
+            <FaGithub className="flex-shrink-0 w-4 h-4" />
+            <span className="truncate">GitHub</span>
+          </a>
+        )}
+      </div>
+
+      {/* Mobile Followers/Following Count - Single line */}
+      <div className="sm:hidden mt-4 flex items-center justify-center gap-8 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 px-3 py-2 rounded-lg border border-cyan-500/30">
+        <p className="text-cyan-400 font-semibold text-sm">
+          {displayUser?.followers?.length || 0} followers
+        </p>
+        <p className="text-cyan-400 font-semibold text-sm">
+          {displayUser?.following?.length || 0} following
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default ProfileDescription;
